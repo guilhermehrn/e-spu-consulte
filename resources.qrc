@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="/plugins/e_spu_consulte">
+    <file>spulogo.gif</file>
+    <file>icon.png</file>
+  </qresource>
+</RCC>
