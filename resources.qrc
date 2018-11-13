@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="/plugins/e_spu_consulte">
+    <file>urgeologo.png</file>
     <file>spulogo.gif</file>
     <file>icon.png</file>
   </qresource>

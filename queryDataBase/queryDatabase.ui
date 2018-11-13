@@ -306,14 +306,14 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_13">
      <item>
-      <widget class="QPushButton" name="pushButton">
+      <widget class="QPushButton" name="cancelar">
        <property name="text">
         <string>Cancelar</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton_2">
+      <widget class="QPushButton" name="iniciar">
        <property name="text">
         <string>Iniciar</string>
        </property>
@@ -326,11 +326,8 @@
   <zorder>radioButton_2</zorder>
   <zorder>radioButton_3</zorder>
   <zorder>frame_2</zorder>
-  <zorder>label_9</zorder>
-  <zorder>frame_6</zorder>
   <zorder>frame</zorder>
-  <zorder>horizontalLayoutWidget_12</zorder>
-  <zorder>horizontalLayoutWidget_12</zorder>
+  <zorder>frame_6</zorder>
  </widget>
  <resources/>
  <connections/>

@@ -32,31 +32,24 @@ from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import QMessageBox, QDialog
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
-    os.path.dirname(__file__), 'e_spu_consulte_dialog_base.ui'))
+    os.path.dirname(__file__), 'resultQuery.ui'))
 
-from .configuration.configurationDialog import ConfigurationDialog
-from .queryDataBase.queryDataBase import QueryDataBase
 
-class EspuConsulteDialog(QtWidgets.QDialog, FORM_CLASS):
-    def __init__(self,iface, parent=None):
+class ResultQuery(QDialog, FORM_CLASS):
+    def __init__(self, iface):
         """Constructor."""
-        super(EspuConsulteDialog, self).__init__(parent)
+
+        QDialog.__init__(self)
+        self.setupUi(self)
+        #super(EspuConsulteDialog, self).__init__(parent)
         # Set up the user interface from Designer.
         # After setupUI you can access any designer object by doing
         # self.<objectname>, and you can use autoconnect slots - see
         # http://qt-project.org/doc/qt-4.8/designer-using-a-ui-file.html
         # #widgets-and-dialogs-with-auto-connect
 
-        self.setupUi(self)
-        self.iface = iface
-        self.configuracoes.clicked.connect(self.setConfigurations)
-        self.consultBase.clicked.connect(self.querybase)
+        # self.generateReport.clicked.connect(self.generatorReport)
 
-
-    def setConfigurations(self):
-        d=ConfigurationDialog(self.iface)
-        d.exec_()
-
-    def querybase(self):
-        d=QueryDataBase(self.iface)
-        d.exec_()
+    # def generatorReport(self):
+    #     d=ConfigurationDialog(self.iface)
+    #     d.exec_()
