@@ -88,5 +88,13 @@ class QueryDataBase(QDialog, FORM_CLASS):
         d.exec_()
 
 
+#manipulando a classe geometry e transformando em wkt e wkb.
 #https://github.com/skeenp/QGIS3-getWKT/blob/master/getwkt3.py
 #https://qgis.org/api/classQgsGeometry.html
+
+#tutorial de postgres no python
+#https://pynative.com/python-postgresql-tutorial/
+
+#return fk table do postgres
+#https://dba.stackexchange.com/questions/36979/retrieving-all-pk-and-fk
+#https://stackoverflow.com/questions/1152260/postgres-sql-to-list-table-foreign-keys
