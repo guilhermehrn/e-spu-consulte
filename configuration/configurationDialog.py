@@ -26,6 +26,7 @@ import os
 
 from PyQt5 import uic
 from PyQt5 import QtWidgets
+from PyQt5.QtCore import QSettings
 
 
 from qgis.PyQt import uic
@@ -47,3 +48,96 @@ class ConfigurationDialog(QDialog, FORM_CLASS):
         # self.<objectname>, and you can use autoconnect slots - see
         # http://qt-project.org/doc/qt-4.8/designer-using-a-ui-file.html
         # #widgets-and-dialogs-with-auto-connect
+
+        settings = QSettings('foo')
+        self.name = settings.value('name')
+
+        self.nameConection.setText(self.name)
+        settings.endGroup()
+        settings = QSettings()
+
+
+        settings.beginGroup('PostgreSQL/connections/'+self.name)
+
+        self.dataBaseName.setText(settings.value('database'))
+        self.hostAdress.setText(settings.value('host'))
+        self.port.setText(settings.value('port'))
+        self.userNameBase.setText(settings.value('username'))
+        self.passwordBase.setText(settings.value('password'))
+
+        settings.endGroup()
+
+
+        self.configButtonBox.accepted.connect(self.storeConnectionConfiguration)
+        #self.buttonBox.rejected.connect(Dialog.reject)
+
+
+    def storeConnectionConfiguration(self):
+        """
+        Stores the new configuration
+        server: server name
+        database: database name
+        """
+        #name = self.connectionEdit.text()
+
+        #(host, port, user, password) = self.getServerConfiguration(server)
+
+        settings = QSettings()
+        settings.beginGroup('PostgreSQL/connections/'+self.nameConection.text())
+        settings.setValue('database', self.dataBaseName.text())
+        settings.setValue('host', self.hostAdress.text())
+        settings.setValue('port', self.port.text())
+        settings.setValue('username', self.userNameBase.text())
+        settings.setValue('password', self.passwordBase.text())
+        settings.endGroup()
+
+        self.storeLastNameConnection()
+        #f = self.getServers
+
+        #print (self.printServers())
+
+
+    def getServerConfiguration(self, name):
+        """
+        Gets server configuration from QSettings
+        name: server name
+        """
+        settings = QSettings()
+        settings.beginGroup('PostgreSQL/servers/'+name)
+        db = settings.value('database')
+        host = settings.value('host')
+        port = settings.value('port')
+        user = settings.value('username')
+        password = settings.value('password')
+        settings.endGroup()
+        return (host,port,db, user, password)
+
+
+    def storeLastNameConnection(self):
+        settings = QSettings('foo')
+        settings.setValue('name', self.nameConection.text())
+        del settings
+
+    def getLastNameConnection(self):
+        settings = QSettings('foo')
+        n = settings.value('name')
+        return n
+
+    def getServers(self):
+        """
+        Gets all servers from QSettings
+        """
+        settings = QSettings()
+        settings.beginGroup('PostgreSQL/connections/')
+        currentConnections = settings.childGroups()
+        settings.endGroup()
+        return currentConnections
+
+    def printServers(self):
+        """
+        Populates the server combo box
+        """
+        #self.serversCombo.clear()
+        currentConnections = self.getServers()
+        for connection in currentConnections:
+            print (connection)

@@ -26,6 +26,7 @@ import os
 
 from PyQt5 import uic
 from PyQt5 import QtWidgets
+import psycopg2
 
 
 from qgis.PyQt import uic
@@ -35,6 +36,7 @@ FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'queryDataBase.ui'))
 
 from .resultQuery import ResultQuery
+from ..configuration.configurationDialog import ConfigurationDialog
 
 class QueryDataBase(QDialog, FORM_CLASS):
     def __init__(self, iface):
@@ -50,11 +52,41 @@ class QueryDataBase(QDialog, FORM_CLASS):
         # http://qt-project.org/doc/qt-4.8/designer-using-a-ui-file.html
         # #widgets-and-dialogs-with-auto-connect
 
-        self.iniciar.clicked.connect(self.showResult)
+        self.nameConect = ConfigurationDialog.getLastNameConnection(self)
+
+        (self.host,self.port, self.db, self.user, self.password) = ConfigurationDialog.getServerConfiguration(self, self.nameConect)
 
 
+
+        self.iniciar.clicked.connect(self.trasformSelctLayerToWkb)
+
+
+
+    def trasformSelctLayerToWkb(self):
+        currentLayer = self.iface.mapCanvas().currentLayer()
+        if currentLayer:
+            selectedFeatures = len(currentLayer.selectedFeatures())
+            if selectedFeatures == 1:
+                selectedFeature = currentLayer.selectedFeatures()[0]
+                d = selectedFeature.geometry().asWkb()
+                print (d)
+            else:
+                QMessageBox.warning(self.iface.mainWindow(), self.tr("Warning!"), self.tr("One and only one feature must be selected to perform the calculations."))
+        else:
+            QMessageBox.warning(self.iface.mainWindow(), self.tr("Warning!"), self.tr("Please, open a layer and select a line or polygon feature."))
+
+
+    def queryFromVectorObject(self):
+        try:
+            conn = psycopg2.connect("dbname='template1' user='dbuser' host='localhost' password='dbpass'")
+        except:
+            print ("I am unable to connect to the database")
 
 
     def showResult(self):
         d=ResultQuery(self.iface)
         d.exec_()
+
+
+#https://github.com/skeenp/QGIS3-getWKT/blob/master/getwkt3.py
+#https://qgis.org/api/classQgsGeometry.html
