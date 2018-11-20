@@ -58,7 +58,7 @@ class QueryDataBase(QDialog, FORM_CLASS):
 
 
 
-        self.iniciar.clicked.connect(self.trasformSelctLayerToWkb)
+        self.iniciar.clicked.connect(self.queryFromVectorObject)
 
 
 
@@ -77,8 +77,13 @@ class QueryDataBase(QDialog, FORM_CLASS):
 
 
     def queryFromVectorObject(self):
+        self.trasformSelctLayerToWkb()
         try:
-            conn = psycopg2.connect("dbname='template1' user='dbuser' host='localhost' password='dbpass'")
+            print (self.nameConect)
+            print (self.host,self.port, self.db, self.user, self.password)
+            conn = psycopg2.connect(" dbname=" + self.db + " user=" + self.user + " host=" + self.host+ " password=" + self.password )
+            if conn:
+                print ("FOI!")
         except:
             print ("I am unable to connect to the database")
 

@@ -52,6 +52,8 @@ class ConfigurationDialog(QDialog, FORM_CLASS):
         settings = QSettings('foo')
         self.name = settings.value('name')
 
+        if self.name == None:
+            self.name=''
         self.nameConection.setText(self.name)
         settings.endGroup()
         settings = QSettings()
@@ -103,7 +105,7 @@ class ConfigurationDialog(QDialog, FORM_CLASS):
         name: server name
         """
         settings = QSettings()
-        settings.beginGroup('PostgreSQL/servers/'+name)
+        settings.beginGroup('PostgreSQL/connections/'+name)
         db = settings.value('database')
         host = settings.value('host')
         port = settings.value('port')
