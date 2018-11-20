@@ -88,6 +88,8 @@ class QueryDataBase(QDialog, FORM_CLASS):
             print ("I am unable to connect to the database")
 
 
+        sql = "SELECT * from"
+
     def showResult(self):
         d=ResultQuery(self.iface)
         d.exec_()
