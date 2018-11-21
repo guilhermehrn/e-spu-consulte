@@ -105,9 +105,17 @@ class DbTools(QDialog, FORM_CLASS):
         rows = cur.fetchall()
         return rows
 
+    #return
     def getTable(self, tableName, schemaName):
         sql = "select * from " + schemaName + "." + tableName +";"
         cur = self.conn.cursor()
         cur.execute(sql)
         rows = cur.fetchall()
         return rows
+
+
+    #def generateId(self,tableName):
+
+    #def setFeicao(self, tableName, newAtributesList):
+
+    #def insertFeicao(self, tablename,atrbutesList):
