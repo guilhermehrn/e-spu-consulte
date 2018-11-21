@@ -96,6 +96,7 @@ class DbTools(QDialog, FORM_CLASS):
         rows = cur.fetchall()
         return rows
 
+    #return a table with intersects with  polygono
     def calculateIntersect(self, polygono, tableName):
         srid = self.getSridTable(tableName)
         sql = "select * from" + tableName + " as ta where ST_Intersects (ta.geom," + "'SRID=" + srid + ";" + polygono + "'::geometry)"
