@@ -68,7 +68,7 @@ class QueryDataBase(QDialog, FORM_CLASS):
             selectedFeatures = len(currentLayer.selectedFeatures())
             if selectedFeatures == 1:
                 selectedFeature = currentLayer.selectedFeatures()[0]
-                d = selectedFeature.geometry().asWkb()
+                d = selectedFeature.geometry().asWkt()
                 print (d)
             else:
                 QMessageBox.warning(self.iface.mainWindow(), self.tr("Warning!"), self.tr("One and only one feature must be selected to perform the calculations."))
