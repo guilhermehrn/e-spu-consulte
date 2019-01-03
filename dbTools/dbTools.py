@@ -113,7 +113,6 @@ class DbTools(QDialog, FORM_CLASS):
         rows = cur.fetchall()
         return rows
 
-
     #def generateId(self,tableName):
 
     #def setFeicao(self, tableName, newAtributesList):
