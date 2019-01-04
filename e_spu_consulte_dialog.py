@@ -51,8 +51,8 @@ class EspuConsulteDialog(QtWidgets.QDialog, FORM_CLASS):
 
         self.setupUi(self)
         self.iface = iface
-        self.consultSobreposicao.clicked.connect(self.querybase)
-        self.consultBase.clicked.connect(self.querybaseEndereco)
+        self.consultSobreposicao.clicked.connect(self.consultarSobreposicao)
+        self.consultBase.clicked.connect(self.consultarPorEndereco)
         self.configuracoes.clicked.connect(self.setConfigurations)
 
 
@@ -61,10 +61,10 @@ class EspuConsulteDialog(QtWidgets.QDialog, FORM_CLASS):
         d=ConfigurationDialog(self.iface)
         d.exec_()
 
-    def querybase(self):
+    def consultarSobreposicao(self):
         d=SearchByPolygon(self.iface)
         d.exec_()
 
-    def querybaseEndereco (self):
+    def consultarPorEndereco(self):
         d= SearchByPoint(self.iface)
         d.exec_()
