@@ -113,7 +113,18 @@ class DbTools(QDialog, FORM_CLASS):
         rows = cur.fetchall()
         return rows
 
-    #def generateId(self,tableName):
+
+    def generateId(self,tableName,schemaName):
+        sql = 'select count(*) from ' + schemaName + '.' + tableName + ';'
+        cur = self.conn.cursor()
+        cur.execute(sql)
+        rows = cur.fetchall()
+        idNumber = 0
+        for row in rows:
+            idNumber = row[0]
+
+        return idNumber + 1
+
 
     #def setFeicao(self, tableName, newAtributesList):
 

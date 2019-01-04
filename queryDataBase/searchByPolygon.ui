@@ -60,7 +60,11 @@
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
-         <widget class="QgsFileWidget" name="mQgsFileWidget"/>
+         <widget class="QgsFileWidget" name="mQgsFileWidget">
+          <property name="filter">
+           <string>.shp</string>
+          </property>
+         </widget>
         </widget>
        </item>
       </layout>
