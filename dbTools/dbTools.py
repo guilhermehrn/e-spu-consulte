@@ -23,7 +23,7 @@
 """
 
 import os
-import psycopg2
+
 
 from PyQt5 import uic
 from PyQt5 import QtWidgets
@@ -35,7 +35,7 @@ from qgis.PyQt.QtWidgets import QMessageBox, QDialog
 from ..configuration.configurationDialog import ConfigurationDialog
 
 
-class DbTools(QDialog, FORM_CLASS):
+class DbTools(QDialog):
     def __init__(self, iface):
         """Constructor."""
 
@@ -60,15 +60,15 @@ class DbTools(QDialog, FORM_CLASS):
 
     #Return a table with relation "FOREIGN KEY". The format of table is: FK_Table | FK_Column | PK_Table | PK_Column
     def getForeignKeyRelationTable(self, tableName):
-        sql='SELECT conrelid::regclass AS ' + '"FK_Table"'+
-        ',CASE WHEN pg_get_constraintdef(c.oid) LIKE' + " 'FOREIGN KEY %' THEN substring(pg_get_constraintdef(c.oid), 14, position(')' in pg_get_constraintdef(c.oid))-14) END AS " +' "FK_Column"''+
-        ',CASE WHEN pg_get_constraintdef(c.oid) LIKE' + " 'FOREIGN KEY %' THEN substring(pg_get_constraintdef(c.oid), position(' REFERENCES ' in pg_get_constraintdef(c.oid))+12, position('(' in substring(pg_get_constraintdef(c.oid), 14))-position(' REFERENCES ' in pg_get_constraintdef(c.oid))+1) END AS " + '"PK_Table"'+
-        ',CASE WHEN pg_get_constraintdef(c.oid) LIKE' + " 'FOREIGN KEY %' THEN substring(pg_get_constraintdef(c.oid), position('(' in substring(pg_get_constraintdef(c.oid), 14))+14, position(')' in substring(pg_get_constraintdef(c.oid), position('(' in substring(pg_get_constraintdef(c.oid), 14))+14))-1) END AS" + '"PK_Column"'+
-        "FROM   pg_constraint c" +
-        "JOIN   pg_namespace n ON n.oid = c.connamespace"+
-        "WHERE  contype IN ('f', 'p ')" +
-        "AND pg_get_constraintdef(c.oid) LIKE 'FOREIGN KEY %' AND conrelid::regclass::text='" + tableName + "'" +
-        "ORDER  BY pg_get_constraintdef(c.oid), conrelid::regclass::text, contype DESC;"
+        sql='SELECT conrelid::regclass AS ' + '"FK_Table"'
+        + ',CASE WHEN pg_get_constraintdef(c.oid) LIKE' + " 'FOREIGN KEY %' THEN substring(pg_get_constraintdef(c.oid), 14, position(')' in pg_get_constraintdef(c.oid))-14) END AS " +' "FK_Column"'
+        +',CASE WHEN pg_get_constraintdef(c.oid) LIKE' + " 'FOREIGN KEY %' THEN substring(pg_get_constraintdef(c.oid), position(' REFERENCES ' in pg_get_constraintdef(c.oid))+12, position('(' in substring(pg_get_constraintdef(c.oid), 14))-position(' REFERENCES ' in pg_get_constraintdef(c.oid))+1) END AS " + '"PK_Table"'
+        +',CASE WHEN pg_get_constraintdef(c.oid) LIKE' + " 'FOREIGN KEY %' THEN substring(pg_get_constraintdef(c.oid), position('(' in substring(pg_get_constraintdef(c.oid), 14))+14, position(')' in substring(pg_get_constraintdef(c.oid), position('(' in substring(pg_get_constraintdef(c.oid), 14))+14))-1) END AS" + '"PK_Column"'
+        +"FROM   pg_constraint c"
+        +"JOIN   pg_namespace n ON n.oid = c.connamespace"
+        +"WHERE  contype IN ('f', 'p ')"
+        +"AND pg_get_constraintdef(c.oid) LIKE 'FOREIGN KEY %' AND conrelid::regclass::text='" + tableName + "'"
+        +"ORDER  BY pg_get_constraintdef(c.oid), conrelid::regclass::text, contype DESC;"
 
         cur = self.conn.cursor()
         cur.execute(sql)
@@ -77,7 +77,7 @@ class DbTools(QDialog, FORM_CLASS):
 
     #Return a RSID of the table. Return a table
     def getSridTable(self, tableName):
-        sql = "select ST_SRID(ta.geom) as srid from" tableName +" as ta group by srid"
+        sql = "select ST_SRID(ta.geom) as srid from" + tableName +" as ta group by srid"
         cur = self.conn.cursor()
         cur.execute(sql)
         rows = cur.fetchall()
@@ -94,7 +94,10 @@ class DbTools(QDialog, FORM_CLASS):
         cur = self.conn.cursor()
         cur.execute(sql)
         rows = cur.fetchall()
+
         return rows
+        #SELECT * FROM information_schema.tables WHERE table_schema='public' AND table_type = 'BASE TABLE' AND table_name<>'spatial_ref_sys'
+        #SELECT * FROM  information_schema.columns where table_schema='public' AND column_name='geom'
 
     #return a table with intersects with  polygono
     def calculateIntersect(self, polygono, tableName):
@@ -112,7 +115,6 @@ class DbTools(QDialog, FORM_CLASS):
         cur.execute(sql)
         rows = cur.fetchall()
         return rows
-
 
     def generateId(self,tableName,schemaName):
         sql = 'select count(*) from ' + schemaName + '.' + tableName + ';'
