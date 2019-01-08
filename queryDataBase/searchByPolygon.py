@@ -87,11 +87,17 @@ class SearchByPolygon(QDialog, FORM_CLASS):
         currentLayer = self.iface.mapCanvas().currentLayer()
         selectedFeatures = len(currentLayer.selectedFeatures())
 
-        #t ='public'
-        rows = DbTools.getTables(self,schemaName='public')
+        dbt=DbTools()
 
-        for r in rows:
-            print (r)
+        rows = dbt.getTablesGeo(schemaName='public')
+        #rows = dbt.getTableColum ('area_especial', 'public')
+        rows = dbt.generateId('area_especial', 'public', 'MG')
+        print (rows)
+        #rows = dbt.calculateIntersect(self.trasformSelctLayerToWkt(), 'area_especial')
+        # for r in rows:
+        #     print (r)
+
+
 
         # if currentLayer:
         #     if selectedFeatures == 1:
