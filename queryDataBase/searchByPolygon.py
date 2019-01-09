@@ -91,11 +91,11 @@ class SearchByPolygon(QDialog, FORM_CLASS):
 
         rows = dbt.getTablesGeo(schemaName='public')
         #rows = dbt.getTableColum ('area_especial', 'public')
-        rows = dbt.generateId('area_especial', 'public', 'MG')
-        print (rows)
+        #rows = dbt.generateId('area_especial', 'public', 'MG')
+        #print (rows)
         #rows = dbt.calculateIntersect(self.trasformSelctLayerToWkt(), 'area_especial')
-        # for r in rows:
-        #     print (r)
+        for r in rows:
+            print (r)
 
 
 
