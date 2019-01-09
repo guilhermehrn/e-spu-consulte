@@ -35,7 +35,9 @@ FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'e_spu_consulte_dialog_base.ui'))
 
 from .configuration.configurationDialog import ConfigurationDialog
-from .queryDataBase.queryDataBase import QueryDataBase
+#from .queryDataBase.queryDataBase import QueryDataBase
+from .queryDataBase.searchByPolygon import SearchByPolygon
+from .queryDataBase.searchByPoint import SearchByPoint
 
 class EspuConsulteDialog(QtWidgets.QDialog, FORM_CLASS):
     def __init__(self,iface, parent=None):
@@ -49,14 +51,20 @@ class EspuConsulteDialog(QtWidgets.QDialog, FORM_CLASS):
 
         self.setupUi(self)
         self.iface = iface
+        self.consultSobreposicao.clicked.connect(self.consultarSobreposicao)
+        self.consultBase.clicked.connect(self.consultarPorEndereco)
         self.configuracoes.clicked.connect(self.setConfigurations)
-        self.consultBase.clicked.connect(self.querybase)
+
 
 
     def setConfigurations(self):
         d=ConfigurationDialog(self.iface)
         d.exec_()
 
-    def querybase(self):
-        d=QueryDataBase(self.iface)
+    def consultarSobreposicao(self):
+        d=SearchByPolygon(self.iface)
+        d.exec_()
+
+    def consultarPorEndereco(self):
+        d= SearchByPoint(self.iface)
         d.exec_()

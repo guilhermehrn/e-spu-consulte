@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>628</width>
-    <height>395</height>
+    <width>655</width>
+    <height>423</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -58,6 +58,19 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
+       <widget class="QToolButton" name="consultSobreposicao">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Consultar Sobreposição</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QToolButton" name="consultBase">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -102,10 +115,22 @@
    <item>
     <widget class="QDialogButtonBox" name="button_box">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>9</width>
+       <height>11</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777168</width>
+       <height>16777141</height>
+      </size>
      </property>
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -120,9 +145,7 @@
    </item>
   </layout>
  </widget>
- <resources>
-
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>button_box</sender>

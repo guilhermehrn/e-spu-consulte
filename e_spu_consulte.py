@@ -168,7 +168,7 @@ class EspuConsulte:
         icon_path = ':/plugins/e_spu_consulte/icon.png'
         self.add_action(
             icon_path,
-            text=self.tr(u''),
+            text=self.tr(u'&E-SPU Consulte'),
             callback=self.run,
             parent=self.iface.mainWindow())
 
