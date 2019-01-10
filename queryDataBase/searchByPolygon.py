@@ -36,6 +36,7 @@ FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'searchByPolygon.ui'))
 
 from ..configuration.configurationDialog import ConfigurationDialog
+from .resultQuery import ResultQuery
 from ..dbTools.dbTools import DbTools
 
 
@@ -84,12 +85,14 @@ class SearchByPolygon(QDialog, FORM_CLASS):
 
 
 
+
     def calcularIntercecoesPorFeicaoSelec(self):
         currentLayer = self.iface.mapCanvas().currentLayer()
         selectedFeatures = len(currentLayer.selectedFeatures())
 
         dbt=DbTools()
         tablesGeo = dbt.getTablesGeo(schemaName='public') #depois mudar para view 'faixa_seguranca'
+        tablesGeoColumns = dbt.getTablesCollumnsAll(tablesGeo,'public')
 
         #rows = dbt.getTablesGeo(schemaName='public')
         #rows = dbt.getTableColum ('area_especial', 'public')
@@ -98,7 +101,20 @@ class SearchByPolygon(QDialog, FORM_CLASS):
         #rows = dbt.calculateIntersect(self.trasformSelctLayerToWkt(), 'area_especial')
         #for r in rows:
         #    print (r)
-        results=[]
+
+
+        #inicializando o progress Bar
+        self.progressBar.setEnabled(True)
+        self.progressBar.setValue(0)
+        self.labelStatusProgress.setText('Iniciando Verificação')
+
+        self.labelStatusProgress.setEnabled(True)
+        porcentProgress = 100/int(len(tablesGeo))
+        acumuladoProgresso = 0
+        count = 0
+
+
+        results={}
         if currentLayer:
             if selectedFeatures == 1:
                 try:
@@ -111,12 +127,22 @@ class SearchByPolygon(QDialog, FORM_CLASS):
                     print(tablesGeo)
                     pol = self.trasformSelctLayerToWkt()
                     for table in tablesGeo:
-                        print (table)
+                        count =count+1
+                        self.labelStatusProgress.setText('Verificando em: ' + table )
                         result = dbt.calculateIntersect(pol, table)
-                        results.append((table, result))
-                        print (result)
-                        result = 0
+                        if len(result)!=0:
+                            results.update({table:result})
+                        result = []
+                        acumuladoProgresso= acumuladoProgresso+ porcentProgress
+                        self.progressBar.setValue(acumuladoProgresso)
 
+                        if count == int(len(tablesGeo)):
+                            self.progressBar.setValue(100)
+                            self.labelStatusProgress.setText('Verificação Finalizada!' )
+
+
+
+                    #print (results)
                         #ADD FUNCAO PARA CALCULO
                         #ADD FANDACAO
                 except:
@@ -127,8 +153,12 @@ class SearchByPolygon(QDialog, FORM_CLASS):
         else:
             QMessageBox.warning(self.iface.mainWindow(), self.tr("Warning!"), self.tr("Please, open a layer and select a line or polygon feature."))
 
+        if results:
+            self.generatorReport(results, tablesGeoColumns)
 
 
-    # def generatorReport(self):
-    #     d=ConfigurationDialog(self.iface)
-    #     d.exec_()
+
+    def generatorReport(self, results, tablesGeoColumns):
+        d=ResultQuery(self.iface, results, tablesGeoColumns)
+        d.fillTable()
+        d.exec_()

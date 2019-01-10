@@ -127,6 +127,7 @@ class DbTools(QDialog):
 
     #return a table with intersects with  polygono
     def calculateIntersect(self, polygono, tableName):
+        t = []
         if self.getNumberLineOfTable(tableName) > 0:
             srid = self.getSridTable(tableName)
             sql = "select * from " + tableName + " as ta where ST_Intersects (ta.geom, " + "ST_GeogFromText('SRID=" + str(srid) + ";" + polygono + "'))"
@@ -138,6 +139,8 @@ class DbTools(QDialog):
             # for r in rows:
             #     print (r[0])
             return rows
+        else:
+            return t
 
     #return a array with columns names of a table.
     def getTableColum(self, tableName, schemaName):
@@ -151,6 +154,15 @@ class DbTools(QDialog):
             columnsLis.append(r[0])
         return columnsLis
 
+    #return dicionario.
+    def getTablesCollumnsAll(self, tablesList, schemaName):
+        columnsList=[]
+        tablesCollumnsDic={}
+        for table in tablesList:
+            columnsList = self.getTableColum(table, schemaName)
+            tablesCollumnsDic.update({table:columnsList})
+
+        return tablesCollumnsDic
 
     def generateId(self,tableName, schemaName, siglaUf):
         codeClassDic= {"trecho_rodoviario":1, "trecho_ferroviario":2, "area_politico_adminitrativo":3, "unidade_federacao":3, "municipio": 3, "municipio":4, "terreno_sujeito_inundacao":5,"faixa_dominio":6, "parcela":7, "terra_originalmente_uniao": 8,"trecho_terreno_marginal":8, "trecho_terreno_marginal":8,"trecho_area_indubitavel":8, "terras_interiores":8, "faixa_dominio":9, "area_especial":10}

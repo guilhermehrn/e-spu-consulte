@@ -29,18 +29,20 @@ from PyQt5 import QtWidgets
 
 
 from qgis.PyQt import uic
-from qgis.PyQt.QtWidgets import QMessageBox, QDialog
+from qgis.PyQt.QtWidgets import QMessageBox, QDialog, QTableWidgetItem
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'resultQuery.ui'))
 
 
 class ResultQuery(QDialog, FORM_CLASS):
-    def __init__(self, iface):
+    def __init__(self, iface, results, tablesGeoColumns):
         """Constructor."""
 
         QDialog.__init__(self)
         self.setupUi(self)
+        self.resultDic = results
+        self.tablesGeoColumns = tablesGeoColumns
         #super(EspuConsulteDialog, self).__init__(parent)
         # Set up the user interface from Designer.
         # After setupUI you can access any designer object by doing
@@ -50,6 +52,32 @@ class ResultQuery(QDialog, FORM_CLASS):
 
         # self.generateReport.clicked.connect(self.generatorReport)
 
+    def calculcateNumberLines(self):
+        t = self.resultDic.keys()
+        numbLinesPrev = 0
+        keysClass = [*t]
+        for classe in keysClass:
+            aux = len(self.resultDic[classe])
+            numbLinesPrev = numbLinesPrev + aux
+
+        return numbLinesPrev
+
+    def fillTable(self):
+        if self.tableWidget.rowCount() == 0:
+            self.tableWidget.setRowCount(self.calculcateNumberLines())
+        i=0
+        print (self.resultDic)
+        t = self.resultDic.keys()
+        keysClass = [*t]
+        for classe in keysClass:
+            itemCellClass = QTableWidgetItem(classe)
+            
+            self.tableWidget.setItem(i, 2, itemCellClass)
+            i=i+1
+
+
+
+
     # def generatorReport(self):
-    #     d=ConfigurationDialog(self.iface)
+    #     d=ConfigurationDialog(self.iface
     #     d.exec_()

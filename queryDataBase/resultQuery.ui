@@ -35,7 +35,7 @@
       <bool>false</bool>
      </property>
      <property name="rowCount">
-      <number>1</number>
+      <number>0</number>
      </property>
      <property name="columnCount">
       <number>4</number>
@@ -61,7 +61,6 @@
      <attribute name="verticalHeaderVisible">
       <bool>true</bool>
      </attribute>
-     <row/>
      <column>
       <property name="text">
        <string>ID</string>
