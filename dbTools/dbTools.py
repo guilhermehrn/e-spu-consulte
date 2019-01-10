@@ -87,6 +87,16 @@ class DbTools(QDialog):
 
         return srid
 
+    def getNumberLineOfTable(self, tableName):
+        sql = "select count(*) from " + tableName
+        cur = self.conn.cursor()
+        cur.execute(sql)
+        rows = cur.fetchall()
+        numberLine=''
+
+        for row in rows:
+            numberLine = row[0]
+        return numberLine
 
     #return all table of a schema. Return a list of strings
     def getAllTables(self, schemaName):
@@ -117,15 +127,17 @@ class DbTools(QDialog):
 
     #return a table with intersects with  polygono
     def calculateIntersect(self, polygono, tableName):
-        srid = self.getSridTable(tableName)
-        sql = "select * from " + tableName + " as ta where ST_Intersects (ta.geom, " + "ST_GeogFromText('SRID=" + str(srid) + ";" + polygono + "'))"
+        if self.getNumberLineOfTable(tableName) > 0:
+            srid = self.getSridTable(tableName)
+            sql = "select * from " + tableName + " as ta where ST_Intersects (ta.geom, " + "ST_GeogFromText('SRID=" + str(srid) + ";" + polygono + "'))"
 
-        cur = self.conn.cursor()
-        cur.execute(sql)
-        rows = cur.fetchall()
-        for r in rows:
-            print (r[0])
-        return rows
+            cur = self.conn.cursor()
+
+            cur.execute(sql)
+            rows = cur.fetchall()
+            # for r in rows:
+            #     print (r[0])
+            return rows
 
     #return a array with columns names of a table.
     def getTableColum(self, tableName, schemaName):
@@ -165,7 +177,7 @@ class DbTools(QDialog):
 
         newid = siglaUfId * 100000000 + idclasse * 1000000 + lineNumber + 1
         return newid
-        
+
 
 
 

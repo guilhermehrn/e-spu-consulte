@@ -27,6 +27,7 @@ import os
 from PyQt5 import uic
 from PyQt5 import QtWidgets
 import psycopg2
+import sys
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import QMessageBox, QDialog
@@ -88,34 +89,43 @@ class SearchByPolygon(QDialog, FORM_CLASS):
         selectedFeatures = len(currentLayer.selectedFeatures())
 
         dbt=DbTools()
+        tablesGeo = dbt.getTablesGeo(schemaName='public') #depois mudar para view 'faixa_seguranca'
 
-        rows = dbt.getTablesGeo(schemaName='public')
+        #rows = dbt.getTablesGeo(schemaName='public')
         #rows = dbt.getTableColum ('area_especial', 'public')
         #rows = dbt.generateId('area_especial', 'public', 'MG')
         #print (rows)
         #rows = dbt.calculateIntersect(self.trasformSelctLayerToWkt(), 'area_especial')
-        for r in rows:
-            print (r)
+        #for r in rows:
+        #    print (r)
+        results=[]
+        if currentLayer:
+            if selectedFeatures == 1:
+                try:
+                    #print (self.nameConect)
+                    #print (self.host,self.port, self.db, self.user, self.password)
+                    #conn = psycopg2.connect(" dbname=" + self.db + " user=" + self.user + " host=" + self.host+ " password=" + self.password )
+                    #if conn:
+                    print ("FOI!")
 
+                    print(tablesGeo)
+                    pol = self.trasformSelctLayerToWkt()
+                    for table in tablesGeo:
+                        print (table)
+                        result = dbt.calculateIntersect(pol, table)
+                        results.append((table, result))
+                        print (result)
+                        result = 0
 
-
-        # if currentLayer:
-        #     if selectedFeatures == 1:
-        #         poligonBin = self.trasformSelctLayerToWkb()
-        #         try:
-        #             print (self.nameConect)
-        #             print (self.host,self.port, self.db, self.user, self.password)
-        #             conn = psycopg2.connect(" dbname=" + self.db + " user=" + self.user + " host=" + self.host+ " password=" + self.password )
-        #             if conn:
-        #                 print ("FOI!")
-        #                 #ADD FUNCAO PARA CALCULO
-        #                 #ADD FANDACAO
-        #         except:
-        #             print ("I am unable to connect to the database")
-        #     else:
-        #         QMessageBox.warning(self.iface.mainWindow(), self.tr("Warning!"), self.tr("One and only one feature must be selected to perform the calculations."))
-        # else:
-        #     QMessageBox.warning(self.iface.mainWindow(), self.tr("Warning!"), self.tr("Please, open a layer and select a line or polygon feature."))
+                        #ADD FUNCAO PARA CALCULO
+                        #ADD FANDACAO
+                except:
+                    print (sys.exc_info()[0])
+                    print ("I am unable to connect to the database")
+            else:
+                QMessageBox.warning(self.iface.mainWindow(), self.tr("Warning!"), self.tr("One and only one feature must be selected to perform the calculations."))
+        else:
+            QMessageBox.warning(self.iface.mainWindow(), self.tr("Warning!"), self.tr("Please, open a layer and select a line or polygon feature."))
 
 
 
