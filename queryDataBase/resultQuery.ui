@@ -78,7 +78,7 @@
      </column>
      <column>
       <property name="text">
-       <string>Geometria</string>
+       <string>Observação</string>
       </property>
      </column>
     </widget>

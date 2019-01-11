@@ -36,7 +36,7 @@ FORM_CLASS, _ = uic.loadUiType(os.path.join(
 
 
 class ResultQuery(QDialog, FORM_CLASS):
-    def __init__(self, iface, results, tablesGeoColumns):
+    def __init__(self, iface, results, tablesGeoColumns,ufIntecectList, municipioInterctList):
         """Constructor."""
 
         QDialog.__init__(self)
@@ -66,14 +66,52 @@ class ResultQuery(QDialog, FORM_CLASS):
         if self.tableWidget.rowCount() == 0:
             self.tableWidget.setRowCount(self.calculcateNumberLines())
         i=0
-        print (self.resultDic)
+        #print (self.resultDic)
         t = self.resultDic.keys()
         keysClass = [*t]
+        print (keysClass)
         for classe in keysClass:
-            itemCellClass = QTableWidgetItem(classe)
-            
-            self.tableWidget.setItem(i, 2, itemCellClass)
-            i=i+1
+            print ("Oi: " + classe)
+            MatrizFeicoes = self.resultDic[classe]
+            keyColumns = self.tablesGeoColumns[classe]
+            print (keyColumns)
+            if keyColumns.index("idproduto") >=0:
+                idIndex = keyColumns.index("idproduto")
+            else:
+                idIndex = keyColumns.index("terra_originalmente_uniao_idproduto")
+
+            if keyColumns.index("nome") >=0:
+                nomeIndex = keyColumns.index("nome")
+            else:
+                nomeIndex = -1
+
+            if keyColumns.index("observacao")>=0:
+                ObsIndex = keyColumns.index("observacao")
+            else:
+                ObsIndex= -1
+
+            j=0
+            for feicao in MatrizFeicoes:
+
+                #print(MatrizFeicoes[j][idIndex])
+
+                if idIndex > -1:
+                    itemCellClass = QTableWidgetItem(str(MatrizFeicoes[j][idIndex]))
+                    self.tableWidget.setItem(i, 0, itemCellClass)
+
+                if nomeIndex > -1:
+                    itemCellClass = QTableWidgetItem(str(MatrizFeicoes[j][nomeIndex]))
+                    self.tableWidget.setItem(i, 1, itemCellClass)
+
+                if ObsIndex > -1:
+                    itemCellClass = QTableWidgetItem(str(MatrizFeicoes[j][ObsIndex]))
+                    self.tableWidget.setItem(i, 3, itemCellClass)
+
+                itemCellClass = QTableWidgetItem(classe)
+                self.tableWidget.setItem(i, 2, itemCellClass)
+                j=j+1
+                i=i+1
+
 
 
 

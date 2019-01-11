@@ -190,6 +190,8 @@ class DbTools(QDialog):
         newid = siglaUfId * 100000000 + idclasse * 1000000 + lineNumber + 1
         return newid
 
+    #def getDadosAreaPoliticoAdministrativa(self, areaAdmin):
+
 
 
 

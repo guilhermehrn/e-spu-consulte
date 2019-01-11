@@ -51,6 +51,8 @@ class SearchByPolygon(QDialog, FORM_CLASS):
         self.nameConect = ConfigurationDialog.getLastNameConnection(self)
         (self.host,self.port, self.db, self.user, self.password) = ConfigurationDialog.getServerConfiguration(self, self.nameConect)
         self.searchDB.clicked.connect(self.calcularIntercecoesPorFeicaoSelec)
+        self.ignoreTable = ["unidade_federacao", "municipio"]
+
 
         #super(EspuConsulteDialog, self).__init__(parent)
         # Set up the user interface from Designer.
@@ -92,7 +94,13 @@ class SearchByPolygon(QDialog, FORM_CLASS):
 
         dbt=DbTools()
         tablesGeo = dbt.getTablesGeo(schemaName='public') #depois mudar para view 'faixa_seguranca'
+
         tablesGeoColumns = dbt.getTablesCollumnsAll(tablesGeo,'public')
+
+        for i in range(0,len(self.ignoreTable)):
+            tablesGeo.remove(self.ignoreTable[i])
+
+
 
         #rows = dbt.getTablesGeo(schemaName='public')
         #rows = dbt.getTableColum ('area_especial', 'public')
@@ -109,12 +117,15 @@ class SearchByPolygon(QDialog, FORM_CLASS):
         self.labelStatusProgress.setText('Iniciando Verificação')
 
         self.labelStatusProgress.setEnabled(True)
-        porcentProgress = 100/int(len(tablesGeo))
+        porcentProgress = 100/(int(len(tablesGeo)) + 2)
         acumuladoProgresso = 0
         count = 0
 
 
         results={}
+
+
+
         if currentLayer:
             if selectedFeatures == 1:
                 try:
@@ -126,6 +137,15 @@ class SearchByPolygon(QDialog, FORM_CLASS):
 
                     print(tablesGeo)
                     pol = self.trasformSelctLayerToWkt()
+
+                    self.labelStatusProgress.setText('Obtendo a : ' + 'Unidade da Federacao' )
+                    ufIntecectList = dbt.calculateIntersect(pol, "unidade_federacao")
+                    acumuladoProgresso= acumuladoProgresso+ porcentProgress
+
+                    self.labelStatusProgress.setText('Obtendo o : ' + 'municipio' )
+                    municipioInterctList = dbt.calculateIntersect(pol, "municipio")
+                    acumuladoProgresso= acumuladoProgresso+ porcentProgress
+
                     for table in tablesGeo:
                         count =count+1
                         self.labelStatusProgress.setText('Verificando em: ' + table )
@@ -154,11 +174,11 @@ class SearchByPolygon(QDialog, FORM_CLASS):
             QMessageBox.warning(self.iface.mainWindow(), self.tr("Warning!"), self.tr("Please, open a layer and select a line or polygon feature."))
 
         if results:
-            self.generatorReport(results, tablesGeoColumns)
+            self.generatorReport(results, tablesGeoColumns, ufIntecectList, municipioInterctList)
 
 
 
-    def generatorReport(self, results, tablesGeoColumns):
-        d=ResultQuery(self.iface, results, tablesGeoColumns)
+    def generatorReport(self, results, tablesGeoColumns, ufIntecectList, municipioInterctList):
+        d=ResultQuery(self.iface, results, tablesGeoColumns, ufIntecectList, municipioInterctList)
         d.fillTable()
         d.exec_()
