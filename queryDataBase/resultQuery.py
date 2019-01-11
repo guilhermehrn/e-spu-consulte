@@ -26,13 +26,16 @@ import os
 
 from PyQt5 import uic
 from PyQt5 import QtWidgets
+from PyQt5 import QtGui
 
 
 from qgis.PyQt import uic
-from qgis.PyQt.QtWidgets import QMessageBox, QDialog, QTableWidgetItem
+from qgis.PyQt.QtWidgets import QMessageBox, QDialog, QTableWidgetItem, QPushButton
+from .detailsFeature import DetailsFeature
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'resultQuery.ui'))
+
 
 
 class ResultQuery(QDialog, FORM_CLASS):
@@ -43,6 +46,7 @@ class ResultQuery(QDialog, FORM_CLASS):
         self.setupUi(self)
         self.resultDic = results
         self.tablesGeoColumns = tablesGeoColumns
+        self.iface = iface
         #super(EspuConsulteDialog, self).__init__(parent)
         # Set up the user interface from Designer.
         # After setupUI you can access any designer object by doing
@@ -62,13 +66,34 @@ class ResultQuery(QDialog, FORM_CLASS):
 
         return numbLinesPrev
 
+    def detalharResultado(self):
+        #button = QtGui.qApp.focusWidget()
+        button = self.sender()
+        index = self.tableWidget.indexAt(button.pos())
+        if index.isValid():
+            if index.column() == 4:
+                classFeicao = str(self.tableWidget.item(index.row(), 2).text())
+                #print(classFeicao)
+                tablesResult = self.resultDic[classFeicao]
+                d = DetailsFeature(self.iface, tablesResult, self.tablesGeoColumns[classFeicao])
+                d.detailsFeaturesAll()
+                d.exec_()
+                #print(tablesResult[self.IndexTableToResult[index.row()][2]])
+
+
+
     def fillTable(self):
+
         if self.tableWidget.rowCount() == 0:
             self.tableWidget.setRowCount(self.calculcateNumberLines())
         i=0
         #print (self.resultDic)
         t = self.resultDic.keys()
+        #btn=[]
         keysClass = [*t]
+
+        self.IndexTableToResult=[]
+
         print (keysClass)
         for classe in keysClass:
             print ("Oi: " + classe)
@@ -109,8 +134,22 @@ class ResultQuery(QDialog, FORM_CLASS):
 
                 itemCellClass = QTableWidgetItem(classe)
                 self.tableWidget.setItem(i, 2, itemCellClass)
+                self.IndexTableToResult.append((i,classe,j))
+
+                self.btn = QPushButton(self.tableWidget)
+                self.btn.setText("..." + str(i))
+                self.btn.setObjectName("tbt"+str(i))
+                self.btn.clicked.connect(self.detalharResultado)
+
+                self.tableWidget.setCellWidget(i, 4, self.btn)
+
+                self.tableWidget.itemClicked.connect(self.detalharResultado)
                 j=j+1
                 i=i+1
+
+    #@QPushButton.pyqtSlot(QtWidgets.QTreeWidgetItem, int)
+
+
 
 
 
