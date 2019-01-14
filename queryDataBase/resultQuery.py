@@ -27,11 +27,18 @@ import os
 from PyQt5 import uic
 from PyQt5 import QtWidgets
 from PyQt5 import QtGui
+from PyQt5 import QtCore
 
+from qgis.core import QgsVectorLayer, QgsField, QgsFeature
+from PyQt5.QtCore import QVariant
+from qgis.core import QgsGeometry, QgsPointXY, QgsVectorFileWriter, QgsCoordinateReferenceSystem
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import QMessageBox, QDialog, QTableWidgetItem, QPushButton
 from .detailsFeature import DetailsFeature
+
+from ..dbTools.dbTools import DbTools
+
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'resultQuery.ui'))
@@ -47,6 +54,8 @@ class ResultQuery(QDialog, FORM_CLASS):
         self.resultDic = results
         self.tablesGeoColumns = tablesGeoColumns
         self.iface = iface
+        self.columnConstats = {'integer': 2, 'real': 6, 'boolean':1, 'text': 79, 'character varying': 10}
+        self.generateLayers.clicked.connect(self.createCamada)
         #super(EspuConsulteDialog, self).__init__(parent)
         # Set up the user interface from Designer.
         # After setupUI you can access any designer object by doing
@@ -80,6 +89,77 @@ class ResultQuery(QDialog, FORM_CLASS):
                 d.exec_()
                 #print(tablesResult[self.IndexTableToResult[index.row()][2]])
 
+    def temColuna(self,className,columnName):
+        keyColumns = self.tablesGeoColumns[className]
+        d=False
+
+        for kCol in keyColumns:
+            if kCol == columnName:
+                d=True
+
+        return d
+
+
+
+
+    def createCamada(self):
+        # create layer
+        dbt =DbTools()
+
+        for classe in self.resultDic:
+            geomType = dbt.getGeomTypeTable
+            vl = QgsVectorLayer(geomType, "temporary" + geomType, "memory")
+            pr = vl.dataProvider()
+            vl.startEditing()
+
+            
+            pr.addAttributes( [ QgsField("name", QVariant.String),
+                    QgsField("age",  QVariant.Int),
+        #         QgsField("size", QVariant.Double) ] )
+
+
+
+
+
+
+
+
+
+        # vl = QgsVectorLayer("Point", "temporary_points", "memory")
+        # pr = vl.dataProvider()
+        #
+        # # Enter editing mode
+        # vl.startEditing()
+        #
+        # # add fields
+        # pr.addAttributes( [ QgsField("name", QVariant.String),
+        #         QgsField("age",  QVariant.Int),
+        #         QgsField("size", QVariant.Double) ] )
+        #
+        #         # add a feature
+        # fet = QgsFeature()
+        # fet.setGeometry( QgsGeometry.fromPointXY(QgsPointXY(10.0,10.0)) )
+        # # fet.setAttribute( { 0 : QVariant("Johny"), 1 : QVariant(20), 2 : QVariant(0.3) } )
+        # fet.setAttributes( [QVariant("Johny"),QVariant(20),QVariant(0.3)])
+        # pr.addFeatures( [ fet ] )
+        #
+        # # Commit changes
+        #
+        # vl.updateExtents()
+        # # layer = self.iface.addVectorLayer(vl, "My Layer", "ogr")
+        # # if not layer:
+        # #     print("Layer failed to load!")
+        # path = os.path.join(os.path.dirname(__file__), 'data/my_shapes.shp')
+        #
+        # vl.commitChanges()
+        # error = QgsVectorFileWriter.writeAsVectorFormat(vl,path, "utf-8", QgsCoordinateReferenceSystem(4326), "ESRI Shapefile")
+        #
+        # if error == QgsVectorFileWriter.NoError:
+        #     print("success!")
+        #
+        # layer = self.iface.addVectorLayer(path, "My Layer", "ogr")
+        # if not layer:
+        #     print("Layer failed to load!")
 
 
     def fillTable(self):
@@ -100,17 +180,17 @@ class ResultQuery(QDialog, FORM_CLASS):
             MatrizFeicoes = self.resultDic[classe]
             keyColumns = self.tablesGeoColumns[classe]
             print (keyColumns)
-            if keyColumns.index("idproduto") >=0:
+            if self.temColuna(classe,"idproduto"):
                 idIndex = keyColumns.index("idproduto")
             else:
                 idIndex = keyColumns.index("terra_originalmente_uniao_idproduto")
 
-            if keyColumns.index("nome") >=0:
+            if self.temColuna(classe,"nome"):
                 nomeIndex = keyColumns.index("nome")
             else:
                 nomeIndex = -1
 
-            if keyColumns.index("observacao")>=0:
+            if self.temColuna(classe,"observacao"):
                 ObsIndex = keyColumns.index("observacao")
             else:
                 ObsIndex= -1

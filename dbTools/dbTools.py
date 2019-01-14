@@ -49,6 +49,7 @@ class DbTools(QDialog):
         # http://qt-project.org/doc/qt-4.8/designer-using-a-ui-file.html
         # #widgets-and-dialogs-with-auto-connect
 
+        self.dataGeomTypes = {"trecho_rodoviario":"LineString", "trecho_ferroviario":"LineString", "area_politico_adminitrativo":"Polygon", "unidade_federacao":"Polygon", "municipio": "Polygon", "municipio":"Polygon", "terreno_sujeito_inundacao":"Polygon","faixa_dominio":"Polygon", "parcela":"Polygon", "terra_originalmente_uniao":"Polygon","trecho_terreno_marginal":"Polygon", "trecho_terreno_marginal":"Polygon","trecho_area_indubitavel":"Polygon", "terras_interiores":"Polygon", "faixa_dominio":"Polygon", "area_especial":"Polygon"}
         self.nameConect = ConfigurationDialog.getLastNameConnection(self)
         (self.host,self.port, self.db, self.user, self.password) = ConfigurationDialog.getServerConfiguration(self, self.nameConect)
         # try:
@@ -163,6 +164,18 @@ class DbTools(QDialog):
             tablesCollumnsDic.update({table:columnsList})
 
         return tablesCollumnsDic
+
+    def getGeomTypeTable(self, tableName):
+        return self.dataGeomTypes[tableName]
+
+    
+    def getDataTypeColumns(self, tableName):
+        sql = "select column_name, data_type, character_maximum_length from information_schema.columns where table_name='" + tableName
+        cur = self.conn.cursor()
+        cur.execute(sql)
+        rows = cur.fetchall()
+
+
 
     def generateId(self,tableName, schemaName, siglaUf):
         codeClassDic= {"trecho_rodoviario":1, "trecho_ferroviario":2, "area_politico_adminitrativo":3, "unidade_federacao":3, "municipio": 3, "municipio":4, "terreno_sujeito_inundacao":5,"faixa_dominio":6, "parcela":7, "terra_originalmente_uniao": 8,"trecho_terreno_marginal":8, "trecho_terreno_marginal":8,"trecho_area_indubitavel":8, "terras_interiores":8, "faixa_dominio":9, "area_especial":10}
