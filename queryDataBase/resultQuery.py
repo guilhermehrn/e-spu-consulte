@@ -103,21 +103,34 @@ class ResultQuery(QDialog, FORM_CLASS):
 
 
     def createCamada(self):
-        # create layer
-        dbt =DbTools()
 
-        for classe in self.resultDic:
-            geomType = dbt.getGeomTypeTable
-            vl = QgsVectorLayer(geomType, "temporary" + geomType, "memory")
-            pr = vl.dataProvider()
-            vl.startEditing()
-
-            
-            pr.addAttributes( [ QgsField("name", QVariant.String),
-                    QgsField("age",  QVariant.Int),
-        #         QgsField("size", QVariant.Double) ] )
-
-
+        dbt = DbTools()
+        # key = [*self.resultDic.keys()]
+        # i = 0
+        # for classe in self.resultDic:
+        #     geomType = dbt.getGeomTypeTable(key[i])
+        #     vl = QgsVectorLayer(geomType, "temporary" + geomType, "memory")
+        #     pr = vl.dataProvider()
+        #     vl.startEditing()
+        #
+        #     colDataType = dbt.getDataTypeColumns(key[i])
+        #
+        #     attr = []
+        #     for column in self.tablesGeoColumns[key[i]]:
+        #         costType = colDataType[column][0]
+        #         if column != 'geom':
+        #             attr.append(QgsField(column, costType))
+        #
+        #     pr.addAttributes(attr)
+        #
+        #     # add a feature
+        #     attrValue = {}
+        #     for row in classe:
+        #         fet = QgsFeature()
+        #         geomIndex = self.tablesGeoColumns[key[i]].index['geom']
+        #         fet.setGeometry(QgsGeometry.fromWkb(self.tablesGeoColumns[key[i]].index['geom']))
+        #         for c in range(0,len(row)):
+        #             attrValue.update
 
 
 
@@ -132,7 +145,7 @@ class ResultQuery(QDialog, FORM_CLASS):
         # vl.startEditing()
         #
         # # add fields
-        # pr.addAttributes( [ QgsField("name", QVariant.String),
+        # pr.addAttributes( [ QgsField("name", QVariant),
         #         QgsField("age",  QVariant.Int),
         #         QgsField("size", QVariant.Double) ] )
         #
@@ -217,7 +230,7 @@ class ResultQuery(QDialog, FORM_CLASS):
                 self.IndexTableToResult.append((i,classe,j))
 
                 self.btn = QPushButton(self.tableWidget)
-                self.btn.setText("..." + str(i))
+                self.btn.setText("...")
                 self.btn.setObjectName("tbt"+str(i))
                 self.btn.clicked.connect(self.detalharResultado)
 

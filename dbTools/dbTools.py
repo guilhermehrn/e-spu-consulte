@@ -168,12 +168,18 @@ class DbTools(QDialog):
     def getGeomTypeTable(self, tableName):
         return self.dataGeomTypes[tableName]
 
-    
+
     def getDataTypeColumns(self, tableName):
-        sql = "select column_name, data_type, character_maximum_length from information_schema.columns where table_name='" + tableName
+        sql = "select column_name, data_type, character_maximum_length from information_schema.columns where table_name='" + tableName + "'"
         cur = self.conn.cursor()
         cur.execute(sql)
         rows = cur.fetchall()
+        typeCollumnsDic={}
+        for row in rows:
+            typeCollumnsDic.update({row[0]:(row[1],row[2])})
+
+        return typeCollumnsDic
+
 
 
 
