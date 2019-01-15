@@ -30,7 +30,7 @@ from PyQt5 import QtGui
 from PyQt5 import QtCore
 
 from qgis.core import QgsVectorLayer, QgsField, QgsFeature
-from PyQt5.QtCore import QVariant
+from PyQt5.QtCore import QVariant, QByteArray
 from qgis.core import QgsGeometry, QgsPointXY, QgsVectorFileWriter, QgsCoordinateReferenceSystem
 
 from qgis.PyQt import uic
@@ -105,32 +105,46 @@ class ResultQuery(QDialog, FORM_CLASS):
     def createCamada(self):
 
         dbt = DbTools()
-        # key = [*self.resultDic.keys()]
-        # i = 0
-        # for classe in self.resultDic:
-        #     geomType = dbt.getGeomTypeTable(key[i])
-        #     vl = QgsVectorLayer(geomType, "temporary" + geomType, "memory")
-        #     pr = vl.dataProvider()
-        #     vl.startEditing()
-        #
-        #     colDataType = dbt.getDataTypeColumns(key[i])
-        #
-        #     attr = []
-        #     for column in self.tablesGeoColumns[key[i]]:
-        #         costType = colDataType[column][0]
-        #         if column != 'geom':
-        #             attr.append(QgsField(column, costType))
-        #
-        #     pr.addAttributes(attr)
-        #
-        #     # add a feature
-        #     attrValue = {}
-        #     for row in classe:
-        #         fet = QgsFeature()
-        #         geomIndex = self.tablesGeoColumns[key[i]].index['geom']
-        #         fet.setGeometry(QgsGeometry.fromWkb(self.tablesGeoColumns[key[i]].index['geom']))
-        #         for c in range(0,len(row)):
-        #             attrValue.update
+        key = [*self.resultDic.keys()]
+        i = 0
+        #print (self.resultDic)
+        for classe in self.resultDic:
+            geomType = dbt.getGeomTypeTable(key[i])
+            url = geomType+"?crs=epsg:4674"
+            vl = QgsVectorLayer(url, "temporary" + geomType, "memory")
+            pr = vl.dataProvider()
+            vl.startEditing()
+
+            colDataType = dbt.getDataTypeColumns(key[i])
+
+            attr = []
+            columnGeom = self.tablesGeoColumns[key[i]]
+            geomIndex = columnGeom.index('geom')
+            columnNoGeom = columnGeom
+            columnNoGeom.remove("geom")
+            # print (columnGeom)
+
+            for column in columnGeom:
+                #costType = colDataType[column][0]
+                if column != 'geom':
+                    attr.append(QgsField(column, 10))
+
+            pr.addAttributes(attr)
+
+            # add a feature
+
+
+            attrValue = {}
+            for row in self.resultDic[classe]:
+                print (type(row))
+                fet = QgsFeature()
+                buf = QByteArray(row[geomIndex].encode())
+                print (type(QgsGeometry.fromWkb(buf)))
+                #fet.setGeometry(self.QgsGeometry.fromWkb(row[geomIndex]))
+                # for c in range(0,len(row)):
+                #     attrValue.update
+
+            i = i+1
 
 
 

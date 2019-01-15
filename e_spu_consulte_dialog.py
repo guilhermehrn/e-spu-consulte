@@ -38,6 +38,7 @@ from .configuration.configurationDialog import ConfigurationDialog
 #from .queryDataBase.queryDataBase import QueryDataBase
 from .queryDataBase.searchByPolygon import SearchByPolygon
 from .queryDataBase.searchByPoint import SearchByPoint
+from .editDataBase.addFeature import AddFeature
 
 class EspuConsulteDialog(QtWidgets.QDialog, FORM_CLASS):
     def __init__(self,iface, parent=None):
@@ -54,6 +55,8 @@ class EspuConsulteDialog(QtWidgets.QDialog, FORM_CLASS):
         self.consultSobreposicao.clicked.connect(self.consultarSobreposicao)
         self.consultBase.clicked.connect(self.consultarPorEndereco)
         self.configuracoes.clicked.connect(self.setConfigurations)
+        self.addFeature.clicked.connect(self.addFeatureInBase)
+
 
 
 
@@ -67,4 +70,8 @@ class EspuConsulteDialog(QtWidgets.QDialog, FORM_CLASS):
 
     def consultarPorEndereco(self):
         d= SearchByPoint(self.iface)
+        d.exec_()
+
+    def addFeatureInBase(self):
+        d = AddFeature(self.iface)
         d.exec_()

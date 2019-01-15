@@ -49,7 +49,7 @@ class DbTools(QDialog):
         # http://qt-project.org/doc/qt-4.8/designer-using-a-ui-file.html
         # #widgets-and-dialogs-with-auto-connect
 
-        self.dataGeomTypes = {"trecho_rodoviario":"LineString", "trecho_ferroviario":"LineString", "area_politico_adminitrativo":"Polygon", "unidade_federacao":"Polygon", "municipio": "Polygon", "municipio":"Polygon", "terreno_sujeito_inundacao":"Polygon","faixa_dominio":"Polygon", "parcela":"Polygon", "terra_originalmente_uniao":"Polygon","trecho_terreno_marginal":"Polygon", "trecho_terreno_marginal":"Polygon","trecho_area_indubitavel":"Polygon", "terras_interiores":"Polygon", "faixa_dominio":"Polygon", "area_especial":"Polygon"}
+        self.dataGeomTypes = {"trecho_rodoviario":"LineString", "trecho_ferroviario":"LineString", "area_politico_adminitrativo":"Polygon", "unidade_federacao":"Polygon", "municipio": "Polygon", "municipio":"Polygon", "terreno_sujeito_inundacao":"Polygon","faixa_dominio":"Polygon", "parcela":"Polygon", "terra_originalmente_uniao":"Polygon","trecho_terreno_marginal":"Polygon", "trecho_terreno_marginal":"Polygon","trecho_area_indubitavel":"Polygon", "terras_interiores":"Polygon", "faixa_dominio":"Polygon", "area_especial":"Polygon", "massa_dagua":"Polygon"}
         self.nameConect = ConfigurationDialog.getLastNameConnection(self)
         (self.host,self.port, self.db, self.user, self.password) = ConfigurationDialog.getServerConfiguration(self, self.nameConect)
         # try:

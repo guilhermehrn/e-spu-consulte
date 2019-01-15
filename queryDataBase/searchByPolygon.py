@@ -50,7 +50,9 @@ class SearchByPolygon(QDialog, FORM_CLASS):
 
         self.nameConect = ConfigurationDialog.getLastNameConnection(self)
         (self.host,self.port, self.db, self.user, self.password) = ConfigurationDialog.getServerConfiguration(self, self.nameConect)
-        self.searchDB.clicked.connect(self.calcularIntercecoesPorFeicaoSelec)
+        self.searchDB.clicked.connect(self.executeQueryOnMode)
+        self.radioButtonFeatureSelec.clicked.connect(self.abilitFileWidget)
+        self.radioButtonFromFile.clicked.connect(self.abilitFileWidget)
         self.ignoreTable = ["unidade_federacao", "municipio"]
 
 
@@ -62,6 +64,12 @@ class SearchByPolygon(QDialog, FORM_CLASS):
         # #widgets-and-dialogs-with-auto-connect
 
         # self.generateReport.clicked.connect(self.generatorReport)
+
+    def abilitFileWidget(self):
+        if self.radioButtonFromFile.isChecked():
+            self.mQgsFileWidget.setEnabled(True)
+        if not self.radioButtonFromFile.isChecked():
+            self.mQgsFileWidget.setEnabled(False)
 
 
     def trasformSelctLayerToWkb(self):
@@ -85,9 +93,6 @@ class SearchByPolygon(QDialog, FORM_CLASS):
         return d
 
 
-
-
-
     def calcularIntercecoesPorFeicaoSelec(self):
         currentLayer = self.iface.mapCanvas().currentLayer()
         selectedFeatures = len(currentLayer.selectedFeatures())
@@ -100,8 +105,6 @@ class SearchByPolygon(QDialog, FORM_CLASS):
         for i in range(0,len(self.ignoreTable)):
             tablesGeo.remove(self.ignoreTable[i])
 
-
-
         #rows = dbt.getTablesGeo(schemaName='public')
         #rows = dbt.getTableColum ('area_especial', 'public')
         #rows = dbt.generateId('area_especial', 'public', 'MG')
@@ -109,7 +112,6 @@ class SearchByPolygon(QDialog, FORM_CLASS):
         #rows = dbt.calculateIntersect(self.trasformSelctLayerToWkt(), 'area_especial')
         #for r in rows:
         #    print (r)
-
 
         #inicializando o progress Bar
         self.progressBar.setEnabled(True)
@@ -120,11 +122,7 @@ class SearchByPolygon(QDialog, FORM_CLASS):
         porcentProgress = 100/(int(len(tablesGeo)) + 2)
         acumuladoProgresso = 0
         count = 0
-
-
         results={}
-
-
 
         if currentLayer:
             if selectedFeatures == 1:
@@ -176,6 +174,9 @@ class SearchByPolygon(QDialog, FORM_CLASS):
         if results:
             self.generatorReport(results, tablesGeoColumns, ufIntecectList, municipioInterctList)
 
+    def executeQueryOnMode(self):
+        if self.radioButtonFeatureSelec.isChecked():
+            d = self.calcularIntercecoesPorFeicaoSelec()
 
 
     def generatorReport(self, results, tablesGeoColumns, ufIntecectList, municipioInterctList):
