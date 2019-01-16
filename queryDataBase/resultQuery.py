@@ -202,57 +202,58 @@ class ResultQuery(QDialog, FORM_CLASS):
         self.IndexTableToResult=[]
 
         print (keysClass)
-        for classe in keysClass:
-            print ("Oi: " + classe)
-            MatrizFeicoes = self.resultDic[classe]
-            keyColumns = self.tablesGeoColumns[classe]
-            print (keyColumns)
-            if self.temColuna(classe,"idproduto"):
-                idIndex = keyColumns.index("idproduto")
-            else:
-                idIndex = keyColumns.index("terra_originalmente_uniao_idproduto")
+        if len(self.resultDic) > 0:
+            for classe in keysClass:
+                print ("Oi: " + classe)
+                MatrizFeicoes = self.resultDic[classe]
+                keyColumns = self.tablesGeoColumns[classe]
+                print (keyColumns)
+                if self.temColuna(classe,"idproduto"):
+                    idIndex = keyColumns.index("idproduto")
+                else:
+                    idIndex = keyColumns.index("terra_originalmente_uniao_idproduto")
 
-            if self.temColuna(classe,"nome"):
-                nomeIndex = keyColumns.index("nome")
-            else:
-                nomeIndex = -1
+                if self.temColuna(classe,"nome"):
+                    nomeIndex = keyColumns.index("nome")
+                else:
+                    nomeIndex = -1
 
-            if self.temColuna(classe,"observacao"):
-                ObsIndex = keyColumns.index("observacao")
-            else:
-                ObsIndex= -1
+                if self.temColuna(classe,"observacao"):
+                    ObsIndex = keyColumns.index("observacao")
+                else:
+                    ObsIndex= -1
 
-            j=0
-            for feicao in MatrizFeicoes:
+                j=0
+                for feicao in MatrizFeicoes:
 
-                #print(MatrizFeicoes[j][idIndex])
+                    #print(MatrizFeicoes[j][idIndex])
 
-                if idIndex > -1:
-                    itemCellClass = QTableWidgetItem(str(MatrizFeicoes[j][idIndex]))
-                    self.tableWidget.setItem(i, 0, itemCellClass)
+                    if idIndex > -1:
+                        itemCellClass = QTableWidgetItem(str(MatrizFeicoes[j][idIndex]))
+                        self.tableWidget.setItem(i, 0, itemCellClass)
 
-                if nomeIndex > -1:
-                    itemCellClass = QTableWidgetItem(str(MatrizFeicoes[j][nomeIndex]))
-                    self.tableWidget.setItem(i, 1, itemCellClass)
+                    if nomeIndex > -1:
+                        itemCellClass = QTableWidgetItem(str(MatrizFeicoes[j][nomeIndex]))
+                        self.tableWidget.setItem(i, 1, itemCellClass)
 
-                if ObsIndex > -1:
-                    itemCellClass = QTableWidgetItem(str(MatrizFeicoes[j][ObsIndex]))
-                    self.tableWidget.setItem(i, 3, itemCellClass)
+                    if ObsIndex > -1:
+                        itemCellClass = QTableWidgetItem(str(MatrizFeicoes[j][ObsIndex]))
+                        self.tableWidget.setItem(i, 3, itemCellClass)
 
-                itemCellClass = QTableWidgetItem(classe)
-                self.tableWidget.setItem(i, 2, itemCellClass)
-                self.IndexTableToResult.append((i,classe,j))
+                    itemCellClass = QTableWidgetItem(classe)
+                    self.tableWidget.setItem(i, 2, itemCellClass)
+                    self.IndexTableToResult.append((i,classe,j))
 
-                self.btn = QPushButton(self.tableWidget)
-                self.btn.setText("...")
-                self.btn.setObjectName("tbt"+str(i))
-                self.btn.clicked.connect(self.detalharResultado)
+                    self.btn = QPushButton(self.tableWidget)
+                    self.btn.setText("...")
+                    self.btn.setObjectName("tbt"+str(i))
+                    self.btn.clicked.connect(self.detalharResultado)
 
-                self.tableWidget.setCellWidget(i, 4, self.btn)
+                    self.tableWidget.setCellWidget(i, 4, self.btn)
 
-                self.tableWidget.itemClicked.connect(self.detalharResultado)
-                j=j+1
-                i=i+1
+                    self.tableWidget.itemClicked.connect(self.detalharResultado)
+                    j=j+1
+                    i=i+1
 
     #@QPushButton.pyqtSlot(QtWidgets.QTreeWidgetItem, int)
 
