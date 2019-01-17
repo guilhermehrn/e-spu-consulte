@@ -44,7 +44,7 @@
      <item>
       <layout class="QVBoxLayout" name="verticalLayout_6">
        <item>
-        <widget class="QLabel" name="AttributA">
+        <widget class="QLabel" name="atributoNome">
          <property name="font">
           <font>
            <pointsize>12</pointsize>
@@ -72,7 +72,7 @@
       </layout>
      </item>
      <item>
-      <layout class="QVBoxLayout" name="verticalLayout_3">
+      <layout class="QVBoxLayout" name="container_1">
        <item>
         <widget class="QRadioButton" name="radioButton">
          <property name="text">
@@ -83,7 +83,7 @@
       </layout>
      </item>
      <item>
-      <layout class="QVBoxLayout" name="verticalLayout_5">
+      <layout class="QVBoxLayout" name="container_2">
        <item>
         <widget class="QRadioButton" name="radioButton_2">
          <property name="text">
@@ -94,7 +94,7 @@
       </layout>
      </item>
      <item>
-      <layout class="QVBoxLayout" name="verticalLayout_2">
+      <layout class="QVBoxLayout" name="container_3">
        <item>
         <widget class="QRadioButton" name="radioButton_3">
          <property name="text">

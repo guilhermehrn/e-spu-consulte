@@ -53,6 +53,7 @@ class SearchByPolygon(QDialog, FORM_CLASS):
         self.searchDB.clicked.connect(self.executeQueryOnMode)
         self.radioButtonFeatureSelec.clicked.connect(self.abilitFileWidget)
         self.radioButtonFromFile.clicked.connect(self.abilitFileWidget)
+        self.back.clicked.connect(self.close)
         self.ignoreTable = ["unidade_federacao", "municipio"]
 
 

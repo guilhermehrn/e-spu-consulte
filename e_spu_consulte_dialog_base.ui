@@ -74,7 +74,7 @@
          </font>
         </property>
         <property name="text">
-         <string>Consultar Sobreposição</string>
+         <string>Analisar Sobreposição</string>
         </property>
        </widget>
       </item>
@@ -95,7 +95,7 @@
          </font>
         </property>
         <property name="text">
-         <string>Atualizar Base de Usucapião</string>
+         <string>Adicionar Feição</string>
         </property>
        </widget>
       </item>
@@ -116,7 +116,7 @@
          </font>
         </property>
         <property name="text">
-         <string>Editar Base de Usucapião</string>
+         <string>Editar Base de Dados</string>
         </property>
        </widget>
       </item>
@@ -137,7 +137,7 @@
          </font>
         </property>
         <property name="text">
-         <string>Consultar Base de Usucapião</string>
+         <string>Consultar Base de Dados</string>
         </property>
        </widget>
       </item>
