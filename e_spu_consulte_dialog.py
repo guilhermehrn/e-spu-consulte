@@ -36,7 +36,7 @@ FORM_CLASS, _ = uic.loadUiType(os.path.join(
 
 from .configuration.configurationDialog import ConfigurationDialog
 #from .queryDataBase.queryDataBase import QueryDataBase
-from .queryDataBase.searchByPolygon import SearchByPolygon
+from .queryDataBase.overlayByPolygon import OverlayByPolygon
 from .queryDataBase.searchByPoint import SearchByPoint
 from .editDataBase.addFeature import AddFeature
 
@@ -52,26 +52,33 @@ class EspuConsulteDialog(QtWidgets.QDialog, FORM_CLASS):
 
         self.setupUi(self)
         self.iface = iface
-        self.consultSobreposicao.clicked.connect(self.consultarSobreposicao)
-        self.consultBase.clicked.connect(self.consultarPorEndereco)
+
+        self.consultSobreposicao.clicked.connect(self.checkOverlay)
+        self.consultBase.clicked.connect(self.consultAddress)
         self.configuracoes.clicked.connect(self.setConfigurations)
         self.addFeature.clicked.connect(self.addFeatureInBase)
 
 
-
-
     def setConfigurations(self):
+        """Run the windows with basics configurations of plugins."""
+
         d=ConfigurationDialog(self.iface)
         d.exec_()
 
-    def consultarSobreposicao(self):
-        d=SearchByPolygon(self.iface)
+    def checkOverlay(self):
+        """Executes the window for the overlay check."""
+
+        d=OverlayByPolygon(self.iface)
         d.exec_()
 
-    def consultarPorEndereco(self):
+    def consultAddress(self):
+        """Run the query window by the address."""
+
         d= SearchByPoint(self.iface)
         d.exec_()
 
     def addFeatureInBase(self):
+        """Runs the window to add a new feature."""
+
         d = AddFeature(self.iface)
         d.exec_()
