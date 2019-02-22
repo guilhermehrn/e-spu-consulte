@@ -65,6 +65,9 @@ class OverlayByPolygon(QDialog, FORM_CLASS):
         # self.generateReport.clicked.connect(self.generatorReport)
 
     def abilitFileWidget(self):
+
+        """Control of radio button."""
+
         if self.radioButtonFromFile.isChecked():
             self.mQgsFileWidget.setEnabled(True)
         if not self.radioButtonFromFile.isChecked():
@@ -72,6 +75,8 @@ class OverlayByPolygon(QDialog, FORM_CLASS):
 
 
     def trasformSelctLayerToWkb(self):
+
+        """Traform a select Layer to WKB format. """
 
         currentLayer = self.iface.mapCanvas().currentLayer()
         selectedFeatures = len(currentLayer.selectedFeatures())
@@ -83,7 +88,7 @@ class OverlayByPolygon(QDialog, FORM_CLASS):
 
     def trasformSelctLayerToWkt(self):
 
-        """Traform a select Layer to WKT format """
+        """Traform a select Layer to WKT format."""
 
         currentLayer = self.iface.mapCanvas().currentLayer()
         selectedFeatures = len(currentLayer.selectedFeatures())
@@ -93,13 +98,14 @@ class OverlayByPolygon(QDialog, FORM_CLASS):
         return d
 
 
-    def calcularIntercecoesPorFeicaoSelec(self):
+    def calculateOverlaps(self):
+
+        """Calculates overlays with a selected feature."""
+
         currentLayer = self.iface.mapCanvas().currentLayer()
         selectedFeatures = len(currentLayer.selectedFeatures())
-
         dbt=DbTools()
         tablesGeo = dbt.getTablesGeo(schemaName='public') #depois mudar para view 'faixa_seguranca'
-
         tablesGeoColumns = dbt.getTablesCollumnsAll(tablesGeo,'public')
 
         for i in range(0,len(self.ignoreTable)):
@@ -117,7 +123,6 @@ class OverlayByPolygon(QDialog, FORM_CLASS):
         self.progressBar.setEnabled(True)
         self.progressBar.setValue(0)
         self.labelStatusProgress.setText('Iniciando Verificação')
-
         self.labelStatusProgress.setEnabled(True)
         porcentProgress = 100/(int(len(tablesGeo)) + 2)
         acumuladoProgresso = 0
@@ -139,7 +144,6 @@ class OverlayByPolygon(QDialog, FORM_CLASS):
                     self.labelStatusProgress.setText('Obtendo a : ' + 'Unidade da Federacao' )
                     ufIntecectList = dbt.calculateIntersect(pol, "unidade_federacao")
                     acumuladoProgresso= acumuladoProgresso+ porcentProgress
-
                     self.labelStatusProgress.setText('Obtendo o : ' + 'municipio' )
                     municipioInterctList = dbt.calculateIntersect(pol, "municipio")
                     acumuladoProgresso= acumuladoProgresso+ porcentProgress
@@ -148,9 +152,11 @@ class OverlayByPolygon(QDialog, FORM_CLASS):
                         count =count+1
                         self.labelStatusProgress.setText('Verificando em: ' + table )
                         result = dbt.calculateIntersect(pol, table)
+
                         if len(result)!=0:
                             results.update({table:result})
                         result = []
+
                         acumuladoProgresso= acumuladoProgresso+ porcentProgress
                         self.progressBar.setValue(acumuladoProgresso)
 
@@ -174,10 +180,13 @@ class OverlayByPolygon(QDialog, FORM_CLASS):
 
     def executeQueryOnMode(self):
         if self.radioButtonFeatureSelec.isChecked():
-            d = self.calcularIntercecoesPorFeicaoSelec()
+            self.calculateOverlaps()
 
 
     def generatorReport(self, results, tablesGeoColumns, ufIntecectList, municipioInterctList):
+
+        """Generates a summary report of the result of the query"""
+
         d=ResultQuery(self.iface, results, tablesGeoColumns, ufIntecectList, municipioInterctList)
         d.fillTable()
         d.exec_()

@@ -55,7 +55,7 @@ class ResultQuery(QDialog, FORM_CLASS):
         self.tablesGeoColumns = tablesGeoColumns
         self.iface = iface
         self.columnConstats = {'integer': 2, 'real': 6, 'boolean':1, 'text': 79, 'character varying': 10}
-        self.generateLayers.clicked.connect(self.createCamada)
+        self.generateLayers.clicked.connect(self.createLayer)
         #super(EspuConsulteDialog, self).__init__(parent)
         # Set up the user interface from Designer.
         # After setupUI you can access any designer object by doing
@@ -99,14 +99,11 @@ class ResultQuery(QDialog, FORM_CLASS):
 
         return d
 
-
-
-
-    def createCamada(self):
+    def createLayer(self):
 
         dbt = DbTools()
         key = [*self.resultDic.keys()]
-        i = 0
+        i = createLayer
         #print (self.resultDic)
         for classe in self.resultDic:
             geomType = dbt.getGeomTypeTable(key[i])
@@ -145,12 +142,6 @@ class ResultQuery(QDialog, FORM_CLASS):
                 #     attrValue.update
 
             i = i+1
-
-
-
-
-
-
 
         # vl = QgsVectorLayer("Point", "temporary_points", "memory")
         # pr = vl.dataProvider()
@@ -193,12 +184,10 @@ class ResultQuery(QDialog, FORM_CLASS):
 
         if self.tableWidget.rowCount() == 0:
             self.tableWidget.setRowCount(self.calculcateNumberLines())
-        i=0
-        #print (self.resultDic)
-        t = self.resultDic.keys()
-        #btn=[]
-        keysClass = [*t]
 
+        i=0
+        t = self.resultDic.keys()
+        keysClass = [*t]
         self.IndexTableToResult=[]
 
         print (keysClass)
@@ -208,6 +197,7 @@ class ResultQuery(QDialog, FORM_CLASS):
                 MatrizFeicoes = self.resultDic[classe]
                 keyColumns = self.tablesGeoColumns[classe]
                 print (keyColumns)
+
                 if self.temColuna(classe,"idproduto"):
                     idIndex = keyColumns.index("idproduto")
                 else:
@@ -225,9 +215,7 @@ class ResultQuery(QDialog, FORM_CLASS):
 
                 j=0
                 for feicao in MatrizFeicoes:
-
                     #print(MatrizFeicoes[j][idIndex])
-
                     if idIndex > -1:
                         itemCellClass = QTableWidgetItem(str(MatrizFeicoes[j][idIndex]))
                         self.tableWidget.setItem(i, 0, itemCellClass)
@@ -250,19 +238,6 @@ class ResultQuery(QDialog, FORM_CLASS):
                     self.btn.clicked.connect(self.detalharResultado)
 
                     self.tableWidget.setCellWidget(i, 4, self.btn)
-
                     self.tableWidget.itemClicked.connect(self.detalharResultado)
                     j=j+1
                     i=i+1
-
-    #@QPushButton.pyqtSlot(QtWidgets.QTreeWidgetItem, int)
-
-
-
-
-
-
-
-    # def generatorReport(self):
-    #     d=ConfigurationDialog(self.iface
-    #     d.exec_()

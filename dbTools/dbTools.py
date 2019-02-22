@@ -36,6 +36,7 @@ from ..configuration.configurationDialog import ConfigurationDialog
 
 
 class DbTools(QDialog):
+
     def __init__(self):
         """Constructor."""
 
@@ -59,8 +60,10 @@ class DbTools(QDialog):
     # except:
                 # print ("I am unable to connect to the database")
 
+
     #Return a table with relation "FOREIGN KEY". The format of table is: FK_Table | FK_Column | PK_Table | PK_Column
     def getForeignKeyRelationTable(self, tableName):
+
         sql='SELECT conrelid::regclass AS ' + '"FK_Table"'
         + ',CASE WHEN pg_get_constraintdef(c.oid) LIKE' + " 'FOREIGN KEY %' THEN substring(pg_get_constraintdef(c.oid), 14, position(')' in pg_get_constraintdef(c.oid))-14) END AS " +' "FK_Column"'
         +',CASE WHEN pg_get_constraintdef(c.oid) LIKE' + " 'FOREIGN KEY %' THEN substring(pg_get_constraintdef(c.oid), position(' REFERENCES ' in pg_get_constraintdef(c.oid))+12, position('(' in substring(pg_get_constraintdef(c.oid), 14))-position(' REFERENCES ' in pg_get_constraintdef(c.oid))+1) END AS " + '"PK_Table"'
@@ -76,19 +79,24 @@ class DbTools(QDialog):
         rows = cur.fetchall()
         return rows
 
+
     #Return a RSID of the table. Return a table
     def getSridTable(self, tableName):
+
         sql = "select ST_SRID(ta.geom) as srid from " + tableName +" as ta group by srid"
         cur = self.conn.cursor()
         cur.execute(sql)
         rows = cur.fetchall()
         srid =''
+
         for row in rows:
             srid = row[0]
 
         return srid
 
+
     def getNumberLineOfTable(self, tableName):
+
         sql = "select count(*) from " + tableName
         cur = self.conn.cursor()
         cur.execute(sql)
@@ -99,13 +107,16 @@ class DbTools(QDialog):
             numberLine = row[0]
         return numberLine
 
+
     #return all table of a schema. Return a list of strings
     def getAllTables(self, schemaName):
+
         sql = "SELECT table_name FROM information_schema.tables WHERE table_schema='" + schemaName + "';"
         cur = self.conn.cursor()
         cur.execute(sql)
         rows = cur.fetchall()
         geoTablesLis = []
+
         for r in rows:
             geoTablesLis.append(r[0])
 
@@ -113,28 +124,33 @@ class DbTools(QDialog):
         #SELECT * FROM information_schema.tables WHERE table_schema='public' AND table_type = 'BASE TABLE' AND table_name<>'spatial_ref_sys'
         #SELECT * FROM  information_schema.columns where table_schema='public' AND column_name='geom'
 
+
     #return all table with geometry. Return a list of strings
     def getTablesGeo(self, schemaName):
+
         sql = "SELECT * FROM  information_schema.columns where table_schema='" + schemaName + "' AND column_name='geom'"
         #sql = "SELECT table_name FROM information_schema.tables WHERE table_schema='" + schemaName + "';"
         cur = self.conn.cursor()
         cur.execute(sql)
         rows = cur.fetchall()
         geoTablesLis = []
+
         for r in rows:
             geoTablesLis.append(r[2])
 
         return geoTablesLis
 
+
     #return a table with intersects with  polygono
     def calculateIntersect(self, polygono, tableName):
+
         t = []
+
         if self.getNumberLineOfTable(tableName) > 0:
+
             srid = self.getSridTable(tableName)
             sql = "select * from " + tableName + " as ta where ST_Intersects (ta.geom, " + "ST_GeogFromText('SRID=" + str(srid) + ";" + polygono + "'))"
-
             cur = self.conn.cursor()
-
             cur.execute(sql)
             rows = cur.fetchall()
             # for r in rows:
@@ -143,53 +159,62 @@ class DbTools(QDialog):
         else:
             return t
 
+
     #return a array with columns names of a table.
     def getTableColum(self, tableName, schemaName):
+
         sql = "select column_name from INFORMATION_SCHEMA.columns where table_schema= '" + schemaName + "' and table_name= '" + tableName + "';"
         #sql = "select * from " + schemaName + "." + tableName +";"
         cur = self.conn.cursor()
         cur.execute(sql)
         rows = cur.fetchall()
         columnsLis = []
+
         for r in rows:
             columnsLis.append(r[0])
         return columnsLis
 
+
     #return dicionario.
     def getTablesCollumnsAll(self, tablesList, schemaName):
+
         columnsList=[]
         tablesCollumnsDic={}
+
         for table in tablesList:
             columnsList = self.getTableColum(table, schemaName)
             tablesCollumnsDic.update({table:columnsList})
 
         return tablesCollumnsDic
 
+
     def getGeomTypeTable(self, tableName):
         return self.dataGeomTypes[tableName]
 
 
     def getDataTypeColumns(self, tableName):
+
         sql = "select column_name, data_type, character_maximum_length from information_schema.columns where table_name='" + tableName + "'"
         cur = self.conn.cursor()
         cur.execute(sql)
         rows = cur.fetchall()
         typeCollumnsDic={}
+
         for row in rows:
             typeCollumnsDic.update({row[0]:(row[1],row[2])})
 
         return typeCollumnsDic
 
 
-
-
     def generateId(self,tableName, schemaName, siglaUf):
+
         codeClassDic= {"trecho_rodoviario":1, "trecho_ferroviario":2, "area_politico_adminitrativo":3, "unidade_federacao":3, "municipio": 3, "municipio":4, "terreno_sujeito_inundacao":5,"faixa_dominio":6, "parcela":7, "terra_originalmente_uniao": 8,"trecho_terreno_marginal":8, "trecho_terreno_marginal":8,"trecho_area_indubitavel":8, "terras_interiores":8, "faixa_dominio":9, "area_especial":10}
         sql = 'select count(*) from ' + schemaName + '.' + tableName + ';'
         cur = self.conn.cursor()
         cur.execute(sql)
         rows = cur.fetchall()
         lineNumber = 0
+
         for row in rows:
             lineNumber = row[0]
 
@@ -198,6 +223,7 @@ class DbTools(QDialog):
         cur.execute(sql)
         rows = cur.fetchall()
         siglaUfId = 0
+
         for row in rows:
             siglaUfId = row[0]
 
@@ -210,13 +236,5 @@ class DbTools(QDialog):
         return newid
 
     #def getDadosAreaPoliticoAdministrativa(self, areaAdmin):
-
-
-
-
-
-
-
     #def setFeicao(self, tableName, newAtributesList):
-
     #def insertFeicao(self, tablename,atrbutesList):

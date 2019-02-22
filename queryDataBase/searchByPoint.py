@@ -39,6 +39,7 @@ from .resultQuery import ResultQuery
 from ..configuration.configurationDialog import ConfigurationDialog
 
 class SearchByPoint(QDialog, FORM_CLASS):
+    
     def __init__(self, iface):
         """Constructor."""
 
@@ -53,23 +54,23 @@ class SearchByPoint(QDialog, FORM_CLASS):
         # #widgets-and-dialogs-with-auto-connect
 
         self.nameConect = ConfigurationDialog.getLastNameConnection(self)
-
         (self.host,self.port, self.db, self.user, self.password) = ConfigurationDialog.getServerConfiguration(self, self.nameConect)
-
-
-
         self.iniciar.clicked.connect(self.queryFromVectorObject)
 
-
-
     def trasformSelctLayerToWkb(self):
+        """TODO"""
         currentLayer = self.iface.mapCanvas().currentLayer()
+
         if currentLayer:
+
             selectedFeatures = len(currentLayer.selectedFeatures())
+
             if selectedFeatures == 1:
+
                 selectedFeature = currentLayer.selectedFeatures()[0]
                 d = selectedFeature.geometry().asWkt()
                 print (d)
+
             else:
                 QMessageBox.warning(self.iface.mainWindow(), self.tr("Warning!"), self.tr("One and only one feature must be selected to perform the calculations."))
         else:
@@ -78,15 +79,18 @@ class SearchByPoint(QDialog, FORM_CLASS):
 
     def queryFromVectorObject(self):
         self.trasformSelctLayerToWkb()
+
         try:
+
             print (self.nameConect)
             print (self.host,self.port, self.db, self.user, self.password)
-            conn = psycopg2.connect(" dbname=" + self.db + " user=" + self.user + " host=" + self.host+ " password=" + self.password )
+            conn = psycopg2.connect(" dbname=" + self.db + " user=" + self.user + " host=" + self.host + " password=" + self.password )
+
             if conn:
                 print ("FOI!")
+
         except:
             print ("I am unable to connect to the database")
-
 
         sql = "SELECT * from"
 
