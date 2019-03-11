@@ -116,7 +116,7 @@ class DbTools(QDialog):
         cur.execute(sql)
         rows = cur.fetchall()
         geoTablesLis = []
-
+        
         for r in rows:
             geoTablesLis.append(r[0])
 
