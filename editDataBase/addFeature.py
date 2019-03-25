@@ -25,7 +25,6 @@ class AddFeature(QDialog, FORM_CLASS):
         self.iface = iface
         self.dataInsert = {}
 
-
         self.radioButtonObjetoSelecAddFeature.clicked.connect(self.radioButtonControl)
         self.radioButtonFromFileAddFeature.clicked.connect(self.radioButtonControl)
         self.nextScreen.clicked.connect(self.enterAtributo)

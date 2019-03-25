@@ -63,6 +63,7 @@ class SelectTable(QDialog, FORM_CLASS):
         return menuList
 
     def storeClasseSelect(self):
+
         indexopt = self.comboBoxSelectClasse.currentIndex()
         classSelec = [*self.tablesG][indexopt]
         dbt = DbTools()
@@ -78,15 +79,4 @@ class SelectTable(QDialog, FORM_CLASS):
 
         d= AddAttribute(self.iface, self.dataInsert)
         d.exec_()
-
-
         print(self.dataInsert)
-
-
-
-
-
-    # def enterAtributo(self):
-    #     d=Addattr(self.iface)
-    #     self.close()
-    #     d.exec_()

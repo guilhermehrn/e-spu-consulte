@@ -81,7 +81,6 @@ class ConfigurationDialog(QDialog, FORM_CLASS):
         database: database name
         """
         #name = self.connectionEdit.text()
-
         #(host, port, user, password) = self.getServerConfiguration(server)
 
         settings = QSettings()
@@ -92,10 +91,8 @@ class ConfigurationDialog(QDialog, FORM_CLASS):
         settings.setValue('username', self.userNameBase.text())
         settings.setValue('password', self.passwordBase.text())
         settings.endGroup()
-
         self.storeLastNameConnection()
         #f = self.getServers
-
         #print (self.printServers())
 
 
@@ -116,11 +113,13 @@ class ConfigurationDialog(QDialog, FORM_CLASS):
 
 
     def storeLastNameConnection(self):
+
         settings = QSettings('foo')
         settings.setValue('name', self.nameConection.text())
         del settings
 
     def getLastNameConnection(self):
+
         settings = QSettings('foo')
         n = settings.value('name')
         return n

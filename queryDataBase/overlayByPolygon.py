@@ -83,7 +83,6 @@ class OverlayByPolygon(QDialog, FORM_CLASS):
 
         selectedFeature = currentLayer.selectedFeatures()[0]
         d = selectedFeature.geometry().asWkb()
-        #print (d)
         return d
 
     def trasformSelctLayerToWkt(self):
@@ -94,7 +93,6 @@ class OverlayByPolygon(QDialog, FORM_CLASS):
         selectedFeatures = len(currentLayer.selectedFeatures())
         selectedFeature = currentLayer.selectedFeatures()[0]
         d = selectedFeature.geometry().asWkt()
-        #print (d)
         return d
 
 
@@ -136,11 +134,10 @@ class OverlayByPolygon(QDialog, FORM_CLASS):
                     #print (self.host,self.port, self.db, self.user, self.password)
                     #conn = psycopg2.connect(" dbname=" + self.db + " user=" + self.user + " host=" + self.host+ " password=" + self.password )
                     #if conn:
-                    print ("FOI!")
 
+                    print ("FOI!")
                     print(tablesGeo)
                     pol = self.trasformSelctLayerToWkt()
-
                     self.labelStatusProgress.setText('Obtendo a : ' + 'Unidade da Federacao' )
                     ufIntecectList = dbt.calculateIntersect(pol, "unidade_federacao")
                     acumuladoProgresso= acumuladoProgresso+ porcentProgress
