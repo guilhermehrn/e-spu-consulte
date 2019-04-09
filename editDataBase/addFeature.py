@@ -30,6 +30,7 @@ class AddFeature(QDialog, FORM_CLASS):
         self.nextScreen.clicked.connect(self.enterAtributo)
         self.tablesGeo = DbTools().getTablesGeo("public")
 
+
     def radioButtonControl(self):
         if self.radioButtonFromFileAddFeature.isChecked():
             self.mQgsFileWidget.setEnabled(True)
@@ -37,6 +38,8 @@ class AddFeature(QDialog, FORM_CLASS):
             self.mQgsFileWidget.setEnabled(False)
 
     def enterAtributo(self):
+
         d=SelectTable(self.iface, self.tablesGeo,self.dataInsert)
+        print(self.dataInsert)
         self.close()
         d.exec_()
