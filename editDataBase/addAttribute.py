@@ -25,7 +25,7 @@ class AddAttribute(QDialog, FORM_CLASS):
 
     def prepareTela(self):
         pass
-        da =  self.database =  dataInsert
+        self.database = self.dataInsert
         self.currentAtribute = ""
 
     def createWindowsRadiobut(self):
@@ -33,7 +33,10 @@ class AddAttribute(QDialog, FORM_CLASS):
         # TODO:
 
     def createWindowsString(self):
+        a=1
         # TODO:
     def createWindowsInt(self):
+        a=1
         ## TODO:
     def createWindowsCodeList(self):
+        a=1
