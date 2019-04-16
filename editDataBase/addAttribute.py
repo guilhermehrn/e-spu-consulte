@@ -18,7 +18,7 @@ class AddAttribute(QDialog, FORM_CLASS):
 
         QDialog.__init__(self)
         self.setupUi(self)
-        self.iface = iface
+        self.iface = iface      
         self.database = dataInsert
         self.currentAtribute = ''
         self.currentAtribute = []
