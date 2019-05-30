@@ -166,14 +166,16 @@ class OverlayByPolygon(QDialog, FORM_CLASS):
                         #ADD FANDACAO
                 except:
                     print (sys.exc_info()[0])
-                    print ("I am unable to connect to the database")
+                    print ("Não foi possível conectar ao banco de dados")
             else:
-                QMessageBox.warning(self.iface.mainWindow(), self.tr("Warning!"), self.tr("One and only one feature must be selected to perform the calculations."))
+                QMessageBox.warning(self.iface.mainWindow(), self.tr("Atenção!"), self.tr("Apenas uma feição deve ser selecionada para executar os cálculos."))
         else:
-            QMessageBox.warning(self.iface.mainWindow(), self.tr("Warning!"), self.tr("Please, open a layer and select a line or polygon feature."))
+            QMessageBox.warning(self.iface.mainWindow(), self.tr("Atenção!"), self.tr("Por favor, abra uma camada e selecione uma linha ou um polígono"))
 
         if results:
             self.generatorReport(results, tablesGeoColumns, ufIntecectList, municipioInterctList)
+        else:
+            QMessageBox.warning(self.iface.mainWindow(), self.tr("Informação!"), self.tr("O Polígono Selecionado não sobrepoe areas da união."))
 
     def executeQueryOnMode(self):
         if self.radioButtonFeatureSelec.isChecked():
@@ -183,6 +185,7 @@ class OverlayByPolygon(QDialog, FORM_CLASS):
     def generatorReport(self, results, tablesGeoColumns, ufIntecectList, municipioInterctList):
 
         """Generates a summary report of the result of the query"""
+
 
         d=ResultQuery(self.iface, results, tablesGeoColumns, ufIntecectList, municipioInterctList)
         d.fillTable()
