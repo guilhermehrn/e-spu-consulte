@@ -174,6 +174,7 @@ class OverlayByPolygon(QDialog, FORM_CLASS):
 
         if results:
             self.generatorReport(results, tablesGeoColumns, ufIntecectList, municipioInterctList)
+
         else:
             QMessageBox.warning(self.iface.mainWindow(), self.tr("Informação!"), self.tr("O Polígono Selecionado não sobrepoe areas da união."))
 
