@@ -116,7 +116,7 @@ class DbTools(QDialog):
         cur.execute(sql)
         rows = cur.fetchall()
         geoTablesLis = []
-        
+
         for r in rows:
             geoTablesLis.append(r[0])
 
@@ -149,7 +149,7 @@ class DbTools(QDialog):
         if self.getNumberLineOfTable(tableName) > 0:
 
             srid = self.getSridTable(tableName)
-            sql = "select * from " + tableName + " as ta where ST_Intersects (ta.geom, " + "ST_GeogFromText('SRID=" + str(srid) + ";" + polygono + "'))"
+            sql = "select *, ST_AsText(geom) as wkt_geom from " + tableName + " as ta where ST_Intersects (ta.geom, " + "ST_GeogFromText('SRID=" + str(srid) + ";" + polygono + "'))"
             cur = self.conn.cursor()
             cur.execute(sql)
             rows = cur.fetchall()

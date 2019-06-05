@@ -29,6 +29,9 @@ from PyQt5 import QtWidgets
 import psycopg2
 import sys
 
+from qgis.core import *
+from qgis.gui import *
+
 from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import QMessageBox, QDialog
 
@@ -102,6 +105,17 @@ class OverlayByPolygon(QDialog, FORM_CLASS):
 
         currentLayer = self.iface.mapCanvas().currentLayer()
         selectedFeatures = len(currentLayer.selectedFeatures())
+        layrCRS = self.iface.activeLayer().crs().authid()
+
+
+        #=========================
+        crs = currentLayer.crs()
+        crs.createFromId(4674)
+        currentLayer.setCrs(crs)
+        #QgsMapLayerRegistry.instance().addMapLayer(currentLayer)
+        currentLayer.updateExtents()
+        print ("CRS:", crs.authid())
+        #========================
         dbt=DbTools()
         tablesGeo = dbt.getTablesGeo(schemaName='public') #depois mudar para view 'faixa_seguranca'
         tablesGeoColumns = dbt.getTablesCollumnsAll(tablesGeo,'public')
@@ -187,7 +201,7 @@ class OverlayByPolygon(QDialog, FORM_CLASS):
 
         """Generates a summary report of the result of the query"""
 
-
+        print (results["area_especial"])
         d=ResultQuery(self.iface, results, tablesGeoColumns, ufIntecectList, municipioInterctList)
         d.fillTable()
         d.exec_()

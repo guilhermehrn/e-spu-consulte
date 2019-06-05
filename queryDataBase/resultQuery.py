@@ -37,6 +37,9 @@ from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import QMessageBox, QDialog, QTableWidgetItem, QPushButton
 from .detailsFeature import DetailsFeature
 
+import psycopg2
+from osgeo import ogr
+from qgis.core import QgsVectorLayer, QgsPoint, QgsFeature, QgsGeometry,QgsPointXY, QgsProject
 from ..dbTools.dbTools import DbTools
 
 
@@ -55,14 +58,14 @@ class ResultQuery(QDialog, FORM_CLASS):
         self.tablesGeoColumns = tablesGeoColumns
         self.iface = iface
         self.columnConstats = {'integer': 2, 'real': 6, 'boolean':1, 'text': 79, 'character varying': 10}
-        self.generateLayers.clicked.connect(self.createLayer)
+        #self.generateLayers.clicked.connect(self.createLayer)
         #super(EspuConsulteDialog, self).__init__(parent)
         # Set up the user interface from Designer.
         # After setupUI you can access any designer object by doing
         # self.<objectname>, and you can use autoconnect slots - see
         # http://qt-project.org/doc/qt-4.8/designer-using-a-ui-file.html
         # #widgets-and-dialogs-with-auto-connect
-
+        self.generateLayers.clicked.connect(self.generateVisualization)
         # self.generateReport.clicked.connect(self.generatorReport)
 
     def calculcateNumberLines(self):
@@ -241,3 +244,44 @@ class ResultQuery(QDialog, FORM_CLASS):
                     self.tableWidget.itemClicked.connect(self.detalharResultado)
                     j=j+1
                     i=i+1
+
+    def generateVisualization(self):
+        keys = [*self.resultDic.keys()]
+
+        for key in keys:
+
+            tableResult = self.resultDic[key]
+            colunaCount = len(tableResult[0])
+            strWktIndex= colunaCount-1
+            colNames = self.tablesGeoColumns[key]
+
+            geomType = ogr.CreateGeometryFromWkt(tableResult[0][strWktIndex]).GetGeometryName()
+
+            layer = QgsVectorLayer(geomType + '?crs=epsg:4674', 'interc_' + key , 'memory')
+            prov = layer.dataProvider()
+
+            QgsFildsList = []
+
+            for col in colNames:
+                QgsFildsList.append(QgsField(col, QVariant.String))
+
+
+            prov.addAttributes(QgsFildsList)
+            layer.updateFields()
+
+
+            for row in tableResult:
+
+                strWkt = row[strWktIndex]
+                geo=ogr.CreateGeometryFromWkt(strWkt)
+                print ("Oi: ", list(row).pop())
+
+                r = list(row)
+                r.pop()
+                feat = QgsFeature()
+                feat.setGeometry(QgsGeometry.fromWkt(strWkt))
+                #feat.setAttributes("nome", "end")
+                feat.setAttributes (r)
+                prov.addFeatures([feat])
+                layer.updateExtents()
+                QgsProject.instance().addMapLayer(layer)
