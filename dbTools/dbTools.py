@@ -142,14 +142,15 @@ class DbTools(QDialog):
 
 
     #return a table with intersects with  polygono
-    def calculateIntersect(self, polygono, tableName):
+    def calculateIntersect(self, polygono, tableName, sridLayer):
 
         t = []
 
         if self.getNumberLineOfTable(tableName) > 0:
 
-            srid = self.getSridTable(tableName)
-            sql = "select *, ST_AsText(geom) as wkt_geom from " + tableName + " as ta where ST_Intersects (ta.geom, " + "ST_GeogFromText('SRID=" + str(srid) + ";" + polygono + "'))"
+            sridTable = self.getSridTable(tableName)
+
+            sql = "select *, ST_AsText(geom) as wkt_geom from " + tableName + " as ta where ST_Intersects (ta.geom, " + "ST_GeogFromText('SRID=" + str(sridLayer) + ";" + polygono + "'))"
             cur = self.conn.cursor()
             cur.execute(sql)
             rows = cur.fetchall()

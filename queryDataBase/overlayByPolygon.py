@@ -105,16 +105,19 @@ class OverlayByPolygon(QDialog, FORM_CLASS):
 
         currentLayer = self.iface.mapCanvas().currentLayer()
         selectedFeatures = len(currentLayer.selectedFeatures())
-        layrCRS = self.iface.activeLayer().crs().authid()
+        layerCRS = self.iface.activeLayer().crs().authid()
+
+        crs = layerCRS.split(":")
+        crsid =crs[1]
 
 
         #=========================
-        crs = currentLayer.crs()
-        crs.createFromId(4674)
-        currentLayer.setCrs(crs)
+        #crs = currentLayer.crs()
+        #crs.createFromId(4674)
+        #currentLayer.setCrs(crs)
         #QgsMapLayerRegistry.instance().addMapLayer(currentLayer)
-        currentLayer.updateExtents()
-        print ("CRS:", crs.authid())
+        #currentLayer.updateExtents()
+        #print ("CRS:", crs.authid())
         #========================
         dbt=DbTools()
         tablesGeo = dbt.getTablesGeo(schemaName='public') #depois mudar para view 'faixa_seguranca'
@@ -153,16 +156,16 @@ class OverlayByPolygon(QDialog, FORM_CLASS):
                     print(tablesGeo)
                     pol = self.trasformSelctLayerToWkt()
                     self.labelStatusProgress.setText('Obtendo a : ' + 'Unidade da Federacao' )
-                    ufIntecectList = dbt.calculateIntersect(pol, "unidade_federacao")
+                    ufIntecectList = dbt.calculateIntersect(pol, "unidade_federacao", crsid)
                     acumuladoProgresso= acumuladoProgresso+ porcentProgress
                     self.labelStatusProgress.setText('Obtendo o : ' + 'municipio' )
-                    municipioInterctList = dbt.calculateIntersect(pol, "municipio")
+                    municipioInterctList = dbt.calculateIntersect(pol, "municipio", crsid)
                     acumuladoProgresso= acumuladoProgresso+ porcentProgress
 
                     for table in tablesGeo:
                         count =count+1
                         self.labelStatusProgress.setText('Verificando em: ' + table )
-                        result = dbt.calculateIntersect(pol, table)
+                        result = dbt.calculateIntersect(pol, table, crsid)
 
                         if len(result)!=0:
                             results.update({table:result})
