@@ -27,10 +27,11 @@ import os
 from PyQt5 import uic
 from PyQt5 import QtWidgets
 import psycopg2
-
+import urllib.request
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import QMessageBox, QDialog
+from qgis.PyQt.QtCore import pyqtSlot, QUrl
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'searchByPoint.ui'))
@@ -56,7 +57,7 @@ class SearchByPoint(QDialog, FORM_CLASS):
 
         self.nameConect = ConfigurationDialog.getLastNameConnection(self)
         (self.host,self.port, self.db, self.user, self.password) = ConfigurationDialog.getServerConfiguration(self, self.nameConect)
-        self.iniciar.clicked.connect(self.queryFromVectorObject)
+        self.iniciar.clicked.connect(self.geocodingGoogle)
 
     def trasformSelctLayerToWkb(self):
         """TODO"""
@@ -77,7 +78,7 @@ class SearchByPoint(QDialog, FORM_CLASS):
         else:
             QMessageBox.warning(self.iface.mainWindow(), self.tr("Warning!"), self.tr("Please, open a layer and select a line or polygon feature."))
 
-    
+
     def queryFromVectorObject(self):
         self.trasformSelctLayerToWkb()
 
@@ -94,6 +95,25 @@ class SearchByPoint(QDialog, FORM_CLASS):
             print ("I am unable to connect to the database")
 
         sql = "SELECT * from"
+
+    def geocodingGoogle(self):
+        address = self.address.text()
+        neighborhood = self.neighborhood.text()
+        city = unicode(self.city.text()).encode("utf-8")
+        postalCode = self.postalCode.text()
+        state = self.state.currentText()
+
+        key = ""
+
+
+        url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + address + "," + neighborhood + "," + city.decode('utf8') + "," + postalCode + "," + state + "&key="+key
+        print (url)
+
+        url = urllib.parse.unquote(url)
+        contents = urllib.request.urlopen(QUrl(url)).read()
+
+        #print (contents)
+#https://maps.googleapis.com/maps/api/geocode/json?address=Rua maria de almeida,santa martinha,Ribeirão das neves,33860-280,MG&key=AIzaSyCmxjyojl_hMPq-DdCTpVDE0TxcVdV8rTw
 
     def showResult(self):
         d=ResultQuery(self.iface)
