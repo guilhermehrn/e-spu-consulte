@@ -46,7 +46,7 @@ class SearchByPoint(QDialog, FORM_CLASS):
         QDialog.__init__(self)
         self.setupUi(self)
         self.iface = iface
-        
+
         #super(EspuConsulteDialog, self).__init__(parent)
         # Set up the user interface from Designer.
         # After setupUI you can access any designer object by doing
@@ -77,7 +77,7 @@ class SearchByPoint(QDialog, FORM_CLASS):
         else:
             QMessageBox.warning(self.iface.mainWindow(), self.tr("Warning!"), self.tr("Please, open a layer and select a line or polygon feature."))
 
-
+    
     def queryFromVectorObject(self):
         self.trasformSelctLayerToWkb()
 

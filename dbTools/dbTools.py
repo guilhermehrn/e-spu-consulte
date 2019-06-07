@@ -145,12 +145,15 @@ class DbTools(QDialog):
     def calculateIntersect(self, polygono, tableName, sridLayer):
 
         t = []
-
         if self.getNumberLineOfTable(tableName) > 0:
 
             sridTable = self.getSridTable(tableName)
 
-            sql = "select *, ST_AsText(geom) as wkt_geom from " + tableName + " as ta where ST_Intersects (ta.geom, " + "ST_GeogFromText('SRID=" + str(sridLayer) + ";" + polygono + "'))"
+            print ("SRID ====", sridLayer)
+
+            sql = "select *, ST_AsText(geom) as wkt_geom from " + tableName + " as ta where ST_Intersects (ta.geom, " + " ST_Transform ( ST_GeomFromText('" + polygono + "'," + str(sridLayer) + ")," + str(sridTable) + " ))"
+            #sql = "select *, ST_AsText(geom) as wkt_geom from " + tableName + " as ta where ST_Intersects (ta.geom, " + "ST_GeogFromText('SRID=" + str(sridTable) + ";" + polygono + "'))"
+            print (sql)
             cur = self.conn.cursor()
             cur.execute(sql)
             rows = cur.fetchall()
