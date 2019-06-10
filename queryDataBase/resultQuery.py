@@ -274,7 +274,7 @@ class ResultQuery(QDialog, FORM_CLASS):
 
                 strWkt = row[strWktIndex]
                 geo=ogr.CreateGeometryFromWkt(strWkt)
-                print ("Oi: ", list(row).pop())
+                #print ("Oi: ", list(row).pop())
 
                 r = list(row)
                 r.pop()
@@ -285,3 +285,22 @@ class ResultQuery(QDialog, FORM_CLASS):
                 prov.addFeatures([feat])
                 layer.updateExtents()
                 QgsProject.instance().addMapLayer(layer)
+
+    def generatePointLayer(self, pointText, attr):
+
+        layer = QgsVectorLayer('point?crs=epsg:4674', 'Ponto_endereco', 'memory')
+        prov = layer.dataProvider()
+        feat = QgsFeature()
+        QgsFildsList = []
+        QgsFildsList.append(QgsField("Endereço", QVariant.String))
+        prov.addAttributes(QgsFildsList)
+
+        layer.updateFields()
+        print(pointText)
+
+        feat.setGeometry(QgsGeometry.fromWkt(pointText[0][0]))
+        feat.setAttributes([attr])
+        prov.addFeatures([feat])
+
+        layer.updateExtents()
+        QgsProject.instance().addMapLayer(layer)

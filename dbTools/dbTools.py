@@ -153,7 +153,7 @@ class DbTools(QDialog):
 
             sql = "select *, ST_AsText(geom) as wkt_geom from " + tableName + " as ta where ST_Intersects (ta.geom, " + " ST_Transform ( ST_GeomFromText('" + polygono + "'," + str(sridLayer) + ")," + str(sridTable) + " ))"
             #sql = "select *, ST_AsText(geom) as wkt_geom from " + tableName + " as ta where ST_Intersects (ta.geom, " + "ST_GeogFromText('SRID=" + str(sridTable) + ";" + polygono + "'))"
-            print (sql)
+            #print (sql)
             cur = self.conn.cursor()
             cur.execute(sql)
             rows = cur.fetchall()
@@ -162,6 +162,38 @@ class DbTools(QDialog):
             return rows
         else:
             return t
+
+    def calculateIntersectByPoint(self, pointCoord, tableName, sridPoint, raio):
+        t = []
+        if self.getNumberLineOfTable(tableName) > 0:
+            sridTable = self.getSridTable(tableName)
+            sql = "select *, ST_AsText(geom) as wkt_geom from " + tableName + " as ta where ST_Intersects (ta.geom, " + "ST_Buffer(ST_Transform ( ST_SetSRID (ST_Point(" + str(pointCoord[0]) + "," + str(pointCoord[1]) + ")," + str(sridPoint) + ")," + str(sridTable) + " )," + str(raio) +") )"
+
+            print (sql)
+            cur = self.conn.cursor()
+            cur.execute(sql)
+            rows = cur.fetchall()
+            # for r in rows:
+            #     print (r[0])
+            print(rows)
+            return rows
+        else:
+            return t
+
+
+    def createPoint(self, pointCoord, sridInit):
+        #t = []
+
+        #sridTable = self.getSridTable(tableName)
+        sql = "select ST_AsText( ST_Transform (ST_SetSRID (ST_Point(" + str(pointCoord[0]) + "," + str(pointCoord[1]) + ")," + str(sridInit) + ")," + str(4674) + "))"
+
+        print (sql)
+        cur = self.conn.cursor()
+        cur.execute(sql)
+        rows = cur.fetchall()
+
+        print(rows)
+        return rows
 
 
     #return a array with columns names of a table.

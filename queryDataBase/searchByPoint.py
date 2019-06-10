@@ -28,6 +28,9 @@ from PyQt5 import uic
 from PyQt5 import QtWidgets
 import psycopg2
 import urllib.request
+import urllib.parse
+import json
+from collections import namedtuple
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import QMessageBox, QDialog
@@ -38,6 +41,7 @@ FORM_CLASS, _ = uic.loadUiType(os.path.join(
 
 from .resultQuery import ResultQuery
 from ..configuration.configurationDialog import ConfigurationDialog
+from ..dbTools.dbTools import DbTools
 
 class SearchByPoint(QDialog, FORM_CLASS):
 
@@ -57,7 +61,8 @@ class SearchByPoint(QDialog, FORM_CLASS):
 
         self.nameConect = ConfigurationDialog.getLastNameConnection(self)
         (self.host,self.port, self.db, self.user, self.password) = ConfigurationDialog.getServerConfiguration(self, self.nameConect)
-        self.iniciar.clicked.connect(self.geocodingGoogle)
+        self.iniciar.clicked.connect(self.consultDatabase)
+        self.ignoreTable = ["unidade_federacao", "municipio"]
 
     def trasformSelctLayerToWkb(self):
         """TODO"""
@@ -99,24 +104,92 @@ class SearchByPoint(QDialog, FORM_CLASS):
     def geocodingGoogle(self):
         address = self.address.text()
         neighborhood = self.neighborhood.text()
-        city = unicode(self.city.text()).encode("utf-8")
+        city = self.city.text()
         postalCode = self.postalCode.text()
         state = self.state.currentText()
 
         key = ""
 
+        addr = address + "," + neighborhood + "," + city + "," + postalCode + "," + state
+        addr = urllib.parse.quote(addr)
+        url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + addr + "&key=" + key
 
-        url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + address + "," + neighborhood + "," + city.decode('utf8') + "," + postalCode + "," + state + "&key="+key
+        #url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + address + "," + neighborhood + "," + city.decode('utf8') + "," + postalCode + "," + state + "&key="+key
         print (url)
 
-        url = urllib.parse.unquote(url)
-        contents = urllib.request.urlopen(QUrl(url)).read()
+        contents = urllib.request.urlopen(url).read()
+        print (contents)
 
-        #print (contents)
-#https://maps.googleapis.com/maps/api/geocode/json?address=Rua maria de almeida,santa martinha,Ribeirão das neves,33860-280,MG&key=AIzaSyCmxjyojl_hMPq-DdCTpVDE0TxcVdV8rTw
+        return contents
+
+
+    def consultDatabase (self):
+        data = self.geocodingGoogle()
+        resultGeo = json.loads(data)['results']
+        location =  resultGeo[0]['geometry']['location']
+        datunGoogle = '4326'
+        raio = self.radius.value()
+        count = 0
+        addrFormat = resultGeo[0]["formatted_address"]
+        results={}
+
+        dbt = DbTools()
+
+        tablesGeo = dbt.getTablesGeo(schemaName='public') #depois mudar para view 'faixa_seguranca'
+        tablesGeoColumns = dbt.getTablesCollumnsAll(tablesGeo,'public')
+
+        point = self.createPointLayer((location["lng"], location["lat"]), datunGoogle)
+
+        for i in range(0,len(self.ignoreTable)):
+            tablesGeo.remove(self.ignoreTable[i])
+
+        ufIntecectList = dbt.calculateIntersectByPoint((location["lng"], location["lat"]), "unidade_federacao", datunGoogle, raio)
+        municipioInterctList = dbt.calculateIntersectByPoint((location["lng"], location["lat"]), "municipio", datunGoogle, raio)
+        for table in tablesGeo:
+            count =count+1
+            #self.labelStatusProgress.setText('Verificando em: ' + table )
+            result = dbt.calculateIntersectByPoint((location["lng"], location["lat"]), table, datunGoogle, raio)
+
+            if len(result)!=0:
+                results.update({table:result})
+            result = []
+
+            #acumuladoProgresso= acumuladoProgresso+ porcentProgress
+            #self.progressBar.setValue(acumuladoProgresso)
+
+            #if count == int(len(tablesGeo)):
+            #    self.progressBar.setValue(100)
+            #    self.labelStatusProgress.setText('Verificação Finalizada!' )
+
+
+
+        if results:
+            self.generatorReport(results, tablesGeoColumns, ufIntecectList, municipioInterctList, point, addrFormat)
+
+        else:
+            QMessageBox.warning(self.iface.mainWindow(), self.tr("Informação!"), self.tr("Areas não encontradas"))
+
+
+
+        #dbt.calculateIntersectByPoint((location["lng"], location["lat"]), 'area_especial', datunGoogle, raio)
 
     def showResult(self):
         d=ResultQuery(self.iface)
+        d.exec_()
+
+    def createPointLayer(self, pointCord, sridInit):
+        dbt = DbTools()
+        return dbt.createPoint(pointCord, sridInit)
+
+
+    def generatorReport(self, results, tablesGeoColumns, ufIntecectList, municipioInterctList, point, attr):
+
+        """Generates a summary report of the result of the query"""
+
+        print ("Listas", results.keys())
+        d=ResultQuery(self.iface, results, tablesGeoColumns, ufIntecectList, municipioInterctList)
+        d.fillTable()
+        d.generatePointLayer(point, attr)
         d.exec_()
 
 
