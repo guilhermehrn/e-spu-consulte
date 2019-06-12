@@ -28,7 +28,7 @@ import os
 from PyQt5 import uic
 from PyQt5 import QtWidgets
 import psycopg2
-
+import sqlite3
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import QMessageBox, QDialog
@@ -60,6 +60,13 @@ class DbTools(QDialog):
     # except:
                 # print ("I am unable to connect to the database")
 
+
+    def getRefSys(self):
+        con = sqlite3.connect('C:/PROGRA~1/QGIS3~1.2/apps/qgis/./resources/spatialite.db')
+        cur = con.cursor()
+        cur.execute('select auth_name, auth_srid, ref_sys_name from spatial_ref_sys order by srid')
+        rows = cur.fetchall()
+        return rows
 
     #Return a table with relation "FOREIGN KEY". The format of table is: FK_Table | FK_Column | PK_Table | PK_Column
     def getForeignKeyRelationTable(self, tableName):
@@ -271,6 +278,13 @@ class DbTools(QDialog):
         newid = siglaUfId * 100000000 + idclasse * 1000000 + lineNumber + 1
         return newid
 
+    def getStatesName(self):
+        sql = "SELECT nome_valor FROM dominio.sigla_uf ORDER BY id_codigo ASC "
+        cur = self.conn.cursor()
+        cur.execute(sql)
+        rows = cur.fetchall()
+
+        return rows
     #def getDadosAreaPoliticoAdministrativa(self, areaAdmin):
     #def setFeicao(self, tableName, newAtributesList):
     #def insertFeicao(self, tablename,atrbutesList):

@@ -58,11 +58,20 @@ class SearchByPoint(QDialog, FORM_CLASS):
         # self.<objectname>, and you can use autoconnect slots - see
         # http://qt-project.org/doc/qt-4.8/designer-using-a-ui-file.html
         # #widgets-and-dialogs-with-auto-connect
-
+        db = DbTools()
         self.nameConect = ConfigurationDialog.getLastNameConnection(self)
         (self.host,self.port, self.db, self.user, self.password) = ConfigurationDialog.getServerConfiguration(self, self.nameConect)
         self.iniciar.clicked.connect(self.consultDatabase)
         self.ignoreTable = ["unidade_federacao", "municipio"]
+        self.refSysList = db.getRefSys()
+        self.stateName = db.getStatesName()
+
+        for st in self.stateName:
+            self.state.addItem(st[0])
+
+        for refSys in self.refSysList:
+            self.refSysCombo.addItem(str(refSys[0]) +":" + str(refSys[1]) + " ("+ str(refSys[2] + ")"))
+
 
     def trasformSelctLayerToWkb(self):
         """TODO"""
@@ -138,31 +147,43 @@ class SearchByPoint(QDialog, FORM_CLASS):
         porcentProgress = 100/(int(len(tablesGeo)) + 2)
         acumuladoProgresso = 0
 
-        self.labelStatusProgress.setText('Fazendo a Geocodificação')
-        data = self.geocodingGoogle()
-        resultGeo = json.loads(data)['results']
 
-        acumuladoProgresso= acumuladoProgresso+ porcentProgress
+        if self.tabWidget.currentIndex() == 0 :
+            self.labelStatusProgress.setText('Fazendo a Geocodificação')
+            data = self.geocodingGoogle()
+            resultGeo = json.loads(data)['results']
+            acumuladoProgresso= acumuladoProgresso+ porcentProgress
+            location = resultGeo[0]['geometry']['location']
+            location = (location["lng"], location["lat"])
+            addrFormat = resultGeo[0]["formatted_address"]
+            datun = '4326'
+            point = self.createPointLayer(location, datun)
+        else:
+            acumuladoProgresso= acumuladoProgresso+ porcentProgress
+            location = (float(self.coordN.text()), float(self.coordE.text()))
+            addrFormat = ''
+            datun = self.refSysCombo.currentText()
+            datun = datun.split(" ")[0].split(":")[1]
+            point = self.createPointLayer(location, datun)
 
-        location =  resultGeo[0]['geometry']['location']
-        datunGoogle = '4326'
         raio = self.radius.value()/111.32
         count = 0
-        addrFormat = resultGeo[0]["formatted_address"]
+
         results={}
+
 
         self.progressBar.setValue(acumuladoProgresso)
 
 
-        point = self.createPointLayer((location["lng"], location["lat"]), datunGoogle)
+
 
         for i in range(0,len(self.ignoreTable)):
             tablesGeo.remove(self.ignoreTable[i])
 
         self.labelStatusProgress.setText('Fazendo Reprojeção')
 
-        ufIntecectList = dbt.calculateIntersectByPoint((location["lng"], location["lat"]), "unidade_federacao", datunGoogle, raio)
-        municipioInterctList = dbt.calculateIntersectByPoint((location["lng"], location["lat"]), "municipio", datunGoogle, raio)
+        ufIntecectList = dbt.calculateIntersectByPoint(location, "unidade_federacao", datun, raio)
+        municipioInterctList = dbt.calculateIntersectByPoint(location, "municipio", datun, raio)
 
         acumuladoProgresso= acumuladoProgresso+ porcentProgress
         self.progressBar.setValue(acumuladoProgresso)
@@ -172,7 +193,7 @@ class SearchByPoint(QDialog, FORM_CLASS):
         for table in tablesGeo:
             count =count+1
             self.labelStatusProgress.setText('Verificando em: ' + table )
-            result = dbt.calculateIntersectByPoint((location["lng"], location["lat"]), table, datunGoogle, raio)
+            result = dbt.calculateIntersectByPoint(location, table, datun, raio)
 
             if len(result)!=0:
                 results.update({table:result})
