@@ -66,6 +66,15 @@ class ConfigurationDialog(QDialog, FORM_CLASS):
         self.port.setText(settings.value('port'))
         self.userNameBase.setText(settings.value('username'))
         self.passwordBase.setText(settings.value('password'))
+        settings.endGroup()
+
+        settings.beginGroup("ApiCredenciais")
+        self.key.setText(settings.value('key'))
+
+        if settings.value('geocoderEngineIndex'):
+            self.geocoderEngine.setCurrentIndex(settings.value('geocoderEngineIndex'))
+        else:
+            self.geocoderEngine.setCurrentIndex(2)
 
         settings.endGroup()
 
@@ -92,6 +101,11 @@ class ConfigurationDialog(QDialog, FORM_CLASS):
         settings.setValue('password', self.passwordBase.text())
         settings.endGroup()
         self.storeLastNameConnection()
+
+        settings.beginGroup("ApiCredenciais")
+        settings.setValue('key', self.key.text())
+        settings.setValue('geocoderEngineIndex', self.geocoderEngine.currentIndex())
+        settings.endGroup()
         #f = self.getServers
         #print (self.printServers())
 
@@ -111,6 +125,20 @@ class ConfigurationDialog(QDialog, FORM_CLASS):
         settings.endGroup()
         return (host,port,db, user, password)
 
+    def getKeyApi(self):
+
+        settings = QSettings()
+        settings.beginGroup("ApiCredenciais")
+        s = settings.value('key')
+        settings.endGroup()
+        return s
+
+    def getGeocoderEngineIndex(self):
+        settings = QSettings()
+        settings.beginGroup("ApiCredenciais")
+        s = settings.value('geocoderEngineIndex')
+        settings.endGroup()
+        return s
 
     def storeLastNameConnection(self):
 

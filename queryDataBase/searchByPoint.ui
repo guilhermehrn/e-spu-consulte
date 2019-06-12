@@ -271,7 +271,7 @@
         </font>
        </property>
        <property name="text">
-        <string>Raio de Busca: </string>
+        <string>Raio de Busca (Km): </string>
        </property>
       </widget>
      </item>

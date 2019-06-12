@@ -108,7 +108,7 @@ class SearchByPoint(QDialog, FORM_CLASS):
         postalCode = self.postalCode.text()
         state = self.state.currentText()
 
-        key = ""
+        key = ConfigurationDialog.getKeyApi(self)
 
         addr = address + "," + neighborhood + "," + city + "," + postalCode + "," + state
         addr = urllib.parse.quote(addr)
@@ -124,42 +124,66 @@ class SearchByPoint(QDialog, FORM_CLASS):
 
 
     def consultDatabase (self):
+
+        dbt = DbTools()
+
+        self.progressBar.setEnabled(True)
+        self.progressBar.setValue(0)
+        self.labelStatusProgress.setText('Iniciando Verificação')
+        self.labelStatusProgress.setEnabled(True)
+
+        tablesGeo = dbt.getTablesGeo(schemaName='public') #depois mudar para view 'faixa_seguranca'
+        tablesGeoColumns = dbt.getTablesCollumnsAll(tablesGeo,'public')
+
+        porcentProgress = 100/(int(len(tablesGeo)) + 2)
+        acumuladoProgresso = 0
+
+        self.labelStatusProgress.setText('Fazendo a Geocodificação')
         data = self.geocodingGoogle()
         resultGeo = json.loads(data)['results']
+
+        acumuladoProgresso= acumuladoProgresso+ porcentProgress
+
         location =  resultGeo[0]['geometry']['location']
         datunGoogle = '4326'
-        raio = self.radius.value()
+        raio = self.radius.value()/111.32
         count = 0
         addrFormat = resultGeo[0]["formatted_address"]
         results={}
 
-        dbt = DbTools()
+        self.progressBar.setValue(acumuladoProgresso)
 
-        tablesGeo = dbt.getTablesGeo(schemaName='public') #depois mudar para view 'faixa_seguranca'
-        tablesGeoColumns = dbt.getTablesCollumnsAll(tablesGeo,'public')
 
         point = self.createPointLayer((location["lng"], location["lat"]), datunGoogle)
 
         for i in range(0,len(self.ignoreTable)):
             tablesGeo.remove(self.ignoreTable[i])
 
+        self.labelStatusProgress.setText('Fazendo Reprojeção')
+
         ufIntecectList = dbt.calculateIntersectByPoint((location["lng"], location["lat"]), "unidade_federacao", datunGoogle, raio)
         municipioInterctList = dbt.calculateIntersectByPoint((location["lng"], location["lat"]), "municipio", datunGoogle, raio)
+
+        acumuladoProgresso= acumuladoProgresso+ porcentProgress
+        self.progressBar.setValue(acumuladoProgresso)
+
+        self.labelStatusProgress.setText('Iniciando busca na Base de Dados')
+
         for table in tablesGeo:
             count =count+1
-            #self.labelStatusProgress.setText('Verificando em: ' + table )
+            self.labelStatusProgress.setText('Verificando em: ' + table )
             result = dbt.calculateIntersectByPoint((location["lng"], location["lat"]), table, datunGoogle, raio)
 
             if len(result)!=0:
                 results.update({table:result})
             result = []
 
-            #acumuladoProgresso= acumuladoProgresso+ porcentProgress
-            #self.progressBar.setValue(acumuladoProgresso)
+            acumuladoProgresso= acumuladoProgresso+ porcentProgress
+            self.progressBar.setValue(acumuladoProgresso)
 
-            #if count == int(len(tablesGeo)):
-            #    self.progressBar.setValue(100)
-            #    self.labelStatusProgress.setText('Verificação Finalizada!' )
+            if count == int(len(tablesGeo)):
+                self.progressBar.setValue(100)
+                self.labelStatusProgress.setText('Verificação Finalizada!' )
 
 
 
