@@ -182,7 +182,7 @@ class DbTools(QDialog):
             rows = cur.fetchall()
             # for r in rows:
             #     print (r[0])
-            print(rows)
+            #print(rows)
             return rows
         else:
             return t

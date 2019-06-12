@@ -153,7 +153,7 @@ class OverlayByPolygon(QDialog, FORM_CLASS):
                     #if conn:
 
                     print ("FOI!")
-                    print(tablesGeo)
+                    #print(tablesGeo)
                     pol = self.trasformSelctLayerToWkt()
                     self.labelStatusProgress.setText('Obtendo a : ' + 'Unidade da Federacao' )
                     ufIntecectList = dbt.calculateIntersect(pol, "unidade_federacao", crsid)
@@ -204,7 +204,7 @@ class OverlayByPolygon(QDialog, FORM_CLASS):
 
         """Generates a summary report of the result of the query"""
 
-        print (results["area_especial"])
+        #print (results["area_especial"])
         d=ResultQuery(self.iface, results, tablesGeoColumns, ufIntecectList, municipioInterctList)
         d.fillTable()
         d.exec_()

@@ -85,7 +85,7 @@ class SearchByPoint(QDialog, FORM_CLASS):
 
                 selectedFeature = currentLayer.selectedFeatures()[0]
                 d = selectedFeature.geometry().asWkt()
-                print (d)
+                #print (d)
 
             else:
                 QMessageBox.warning(self.iface.mainWindow(), self.tr("Warning!"), self.tr("One and only one feature must be selected to perform the calculations."))
@@ -127,7 +127,7 @@ class SearchByPoint(QDialog, FORM_CLASS):
         print (url)
 
         contents = urllib.request.urlopen(url).read()
-        print (contents)
+        #print (contents)
 
         return contents
 
@@ -231,7 +231,7 @@ class SearchByPoint(QDialog, FORM_CLASS):
 
         """Generates a summary report of the result of the query"""
 
-        print ("Listas", results.keys())
+        #print ("Listas", results.keys())
         d=ResultQuery(self.iface, results, tablesGeoColumns, ufIntecectList, municipioInterctList)
         d.fillTable()
         d.generatePointLayer(point, attr)
