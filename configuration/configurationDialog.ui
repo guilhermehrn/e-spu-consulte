@@ -138,6 +138,9 @@
             </item>
             <item>
              <widget class="QComboBox" name="geocoderEngine">
+              <property name="currentIndex">
+               <number>0</number>
+              </property>
               <item>
                <property name="text">
                 <string>Nominatim (Openstreetmap)</string>

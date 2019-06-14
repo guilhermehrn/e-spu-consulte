@@ -71,10 +71,10 @@ class ConfigurationDialog(QDialog, FORM_CLASS):
         settings.beginGroup("ApiCredenciais")
         self.key.setText(settings.value('key'))
 
-        if settings.value('geocoderEngineIndex'):
-            self.geocoderEngine.setCurrentIndex(settings.value('geocoderEngineIndex'))
+        if int(settings.value('geocoderEngineIndex')) != 0 or int(settings.value('geocoderEngineIndex')) != 1:
+            self.geocoderEngine.setCurrentIndex(int(settings.value('geocoderEngineIndex')))
         else:
-            self.geocoderEngine.setCurrentIndex(2)
+            self.geocoderEngine.setCurrentIndex(1)
 
         settings.endGroup()
 
