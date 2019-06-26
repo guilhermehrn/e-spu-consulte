@@ -18,7 +18,7 @@ class AddAttribute(QDialog, FORM_CLASS):
 
         QDialog.__init__(self)
         self.setupUi(self)
-        self.iface = iface      
+        self.iface = iface
         self.database = dataInsert
         self.currentAtribute = ''
         self.currentAtribute = []
@@ -30,7 +30,7 @@ class AddAttribute(QDialog, FORM_CLASS):
 
     def createWindowsRadiobut(self):
         a=1
-        # TODO:
+        # TODO: comao aque self.assert_(lakdada dmis self.assert_(aijk[self.assert_(d, 'message')], 'message'), 'message')
 
     def createWindowsString(self):
         a=1
