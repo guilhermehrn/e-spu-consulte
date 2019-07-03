@@ -285,6 +285,8 @@ class DbTools(QDialog):
         rows = cur.fetchall()
 
         return rows
+
+
     #def getDadosAreaPoliticoAdministrativa(self, areaAdmin):
     #def setFeicao(self, tableName, newAtributesList):
     #def insertFeicao(self, tablename,atrbutesList):
