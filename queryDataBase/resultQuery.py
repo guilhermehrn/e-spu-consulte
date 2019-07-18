@@ -182,7 +182,6 @@ class ResultQuery(QDialog, FORM_CLASS):
         # if not layer:
         #     print("Layer failed to load!")
 
-
     def fillTable(self):
 
         if self.tableWidget.rowCount() == 0:
