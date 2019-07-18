@@ -108,7 +108,7 @@ class OverlayByPolygon(QDialog, FORM_CLASS):
         layerCRS = self.iface.activeLayer().crs().authid()
 
         crs = layerCRS.split(":")
-        crsid =crs[1]
+        crsid = crs[1]
 
 
         #=========================
@@ -151,7 +151,6 @@ class OverlayByPolygon(QDialog, FORM_CLASS):
                     #print (self.host,self.port, self.db, self.user, self.password)
                     #conn = psycopg2.connect(" dbname=" + self.db + " user=" + self.user + " host=" + self.host+ " password=" + self.password )
                     #if conn:
-
                     print ("FOI!")
                     #print(tablesGeo)
                     pol = self.trasformSelctLayerToWkt()
