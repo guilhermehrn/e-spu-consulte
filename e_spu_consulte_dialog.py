@@ -39,6 +39,7 @@ from .configuration.configurationDialog import ConfigurationDialog
 from .queryDataBase.overlayByPolygon import OverlayByPolygon
 from .queryDataBase.searchByPoint import SearchByPoint
 from .editDataBase.addFeature import AddFeature
+from .editDataBase.addFeatureWizard import AddFeatureWizard
 
 class EspuConsulteDialog(QtWidgets.QDialog, FORM_CLASS):
     def __init__(self,iface, parent=None):
@@ -80,5 +81,5 @@ class EspuConsulteDialog(QtWidgets.QDialog, FORM_CLASS):
     def addFeatureInBase(self):
         """Runs the window to add a new feature."""
 
-        d = AddFeature(self.iface)
+        d = AddFeatureWizard(self.iface)
         d.exec_()

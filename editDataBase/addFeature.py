@@ -10,6 +10,7 @@ from qgis.PyQt.QtWidgets import QMessageBox, QDialog, QTableWidgetItem, QPushBut
 from .addAttribute import AddAttribute
 from .selectTable import SelectTable
 from ..dbTools.dbTools import DbTools
+from .addFeatureWizard import AddFeatureWizard
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'addFeature.ui'))
@@ -31,15 +32,15 @@ class AddFeature(QDialog, FORM_CLASS):
         self.tablesGeo = DbTools().getTablesGeo("public")
 
 
-    def radioButtonControl(self):
-        if self.radioButtonFromFileAddFeature.isChecked():
-            self.mQgsFileWidget.setEnabled(True)
-        if not self.radioButtonFromFileAddFeature.isChecked():
-            self.mQgsFileWidget.setEnabled(False)
-
-    def enterAtributo(self):
-
-        d=SelectTable(self.iface, self.tablesGeo,self.dataInsert)
-        print(self.dataInsert)
-        self.close()
-        d.exec_()
+    # def radioButtonControl(self):
+    #     if self.radioButtonFromFileAddFeature.isChecked():
+    #         self.mQgsFileWidget.setEnabled(True)
+    #     if not self.radioButtonFromFileAddFeature.isChecked():
+    #         self.mQgsFileWidget.setEnabled(False)
+    #
+    # def enterAtributo(self):
+    #
+    #     d=SelectTable(self.iface, self.tablesGeo,self.dataInsert)
+    #     print(self.dataInsert)
+    #     self.close()
+    #     d.exec_()

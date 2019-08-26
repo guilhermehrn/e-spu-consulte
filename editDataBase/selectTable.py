@@ -77,6 +77,12 @@ class SelectTable(QDialog, FORM_CLASS):
         self.dataInsert.update({"type_col_class_selec": typecolumns})
         self.dataInsert.update({"type_col_class_father":""})
 
-        d= AddAttribute(self.iface, self.dataInsert)
-        d.exec_()
-        print(self.dataInsert)
+        ##d= AddAttribute(self.iface, self.dataInsert)
+        ##d.exec_()
+        ##print(self.dataInsert)
+
+
+
+
+
+

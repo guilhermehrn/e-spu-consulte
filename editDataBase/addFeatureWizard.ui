@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>595</width>
-    <height>234</height>
+    <height>217</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -122,28 +122,6 @@
       </item>
       <item>
        <widget class="QComboBox" name="comboBoxSelectClasse"/>
-      </item>
-     </layout>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QWizardPage" name="wizardPage">
-   <layout class="QVBoxLayout" name="verticalLayout_5">
-    <item>
-     <layout class="QVBoxLayout" name="verticalLayout_4">
-      <item>
-       <widget class="QTableWidget" name="tableWidget">
-        <column>
-         <property name="text">
-          <string>Atributos</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Valores</string>
-         </property>
-        </column>
-       </widget>
       </item>
      </layout>
     </item>
