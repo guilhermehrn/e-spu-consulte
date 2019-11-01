@@ -38,49 +38,59 @@ FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'addFeatureWizard.ui'))
 
 
-class Page1(QWizardPage, FORM_CLASS):
+class Page1(QWizardPage):
 
     def __init__(self, parent=None):
-        super().__init__(parent)
-        QWizardPage.__init__(self.wizardPage1)
+        print("oi")
+        #super().__init__(parent)
+        QWizardPage.__init__(self)
 
 
 
 class AddFeatureWizard(QWizard, QWizardPage, FORM_CLASS):
+
     def __init__(self, iface):
         """Constructor."""
 
         QWizard.__init__(self)
+        QWizardPage.__init__(self)
+
+        p =  FORM_CLASS
+
+        self.QWizard = p
+
+        Page1(self, p.wizardPage1)
+
 
 
         self.addPage(Page1(self))
-        #super().__init__(parent)
-        #self.iface = iface
-        #loader = QtUiTools.QUiLoader()
-        #loader.load(FORM_CLASS, parent=None)
-        #self.dataInsert = {}
+        super().__init__(parent)
+        self.iface = iface
+        loader = QtUiTools.QUiLoader()
+        loader.load(FORM_CLASS, parent=None)
+        self.dataInsert = {}
 
-        #self.radioButtonObjetoSelecAddFeature.clicked.connect(self.radioButtonControl)
-        #self.radioButtonFromFileAddFeature.clicked.connect(self.radioButtonControl)
-        #self.nextScreen.clicked.connect(self.enterAtributo)
-        #self.tablesGeo = DbTools().getTablesGeo("public")
+        self.radioButtonObjetoSelecAddFeature.clicked.connect(self.radioButtonControl)
+        self.radioButtonFromFileAddFeature.clicked.connect(self.radioButtonControl)
+        self.nextScreen.clicked.connect(self.enterAtributo)
+        self.tablesGeo = DbTools().getTablesGeo("public")
 
 
-    # def radioButtonControl(self):
-    #     if self.radioButtonFromFileAddFeature.isChecked():
-    #         self.mQgsFileWidget.setEnabled(True)
-    #     if not self.radioButtonFromFileAddFeature.isChecked():
-    #         self.mQgsFileWidget.setEnabled(False)
-    #
-    # def enterAtributo(self):
-    #
-    #     d=SelectTable(self.iface, self.tablesGeo,self.dataInsert)
-    #     print(self.dataInsert)
-    #     self.close()
-    #     d.exec_()
+    def radioButtonControl(self):
+        if self.radioButtonFromFileAddFeature.isChecked():
+            self.mQgsFileWidget.setEnabled(True)
+        if not self.radioButtonFromFileAddFeature.isChecked():
+            self.mQgsFileWidget.setEnabled(False)
+
+    def enterAtributo(self):
+
+        d=SelectTable(self.iface, self.tablesGeo,self.dataInsert)
+        print(self.dataInsert)
+        self.close()
+        d.exec_()
 
     # def isertPageForBoleanTipes(self):
-    #     #TODO
+    #TODO
     #
     # def isertPageForCodeListTipes(self):
     #     #TODO
