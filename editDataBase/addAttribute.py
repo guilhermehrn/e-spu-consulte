@@ -6,7 +6,7 @@ from PyQt5 import QtGui
 
 
 from qgis.PyQt import uic
-from qgis.PyQt.QtWidgets import QMessageBox, QDialog, QTableWidgetItem, QPushButton
+from qgis.PyQt.QtWidgets import QMessageBox, QDialog, QTableWidgetItem, QPushButton, QComboBox, QHBoxLayout
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'addAttribute.ui'))
@@ -28,15 +28,23 @@ class AddAttribute(QDialog, FORM_CLASS):
         self.database = self.dataInsert
         self.currentAtribute = ""
 
-    def createWindowsRadiobut(self):
-        a=1
-        # TODO: comao aque self.assert_(lakdada dmis self.assert_(aijk[self.assert_(d, 'message')], 'message'), 'message')
+    def createCodeLinstBolean(self):
+        layout = QHBoxLayout()
+        self.cb = QComboBox()
+        self.cb.addItem("True")
+        self.cb.addItem("false")
+        layout.addWidget(self.cb)
+        self.setLayout(layout)
+
 
     def createWindowsString(self):
-        a=1
-        # TODO:
+        a =1
+
+
     def createWindowsInt(self):
         a=1
-        ## TODO:
-    def createWindowsCodeList(self):
+        #ODO:
+    def createWindowsCodeList(self, className):
+
+
         a=1

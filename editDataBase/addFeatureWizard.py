@@ -90,7 +90,7 @@ class AddFeatureWizard(QWizard, QWizardPage, FORM_CLASS):
         d.exec_()
 
     # def isertPageForBoleanTipes(self):
-    #TODO
+    #     #TODO
     #
     # def isertPageForCodeListTipes(self):
     #     #TODO
