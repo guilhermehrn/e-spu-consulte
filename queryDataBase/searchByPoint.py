@@ -159,7 +159,7 @@ class SearchByPoint(QDialog, FORM_CLASS):
             datun = '4326'
             point = self.createPointLayer(location, datun)
         else:
-            acumuladoProgresso= acumuladoProgresso+ porcentProgress
+            acumuladoProgresso = acumuladoProgresso+ porcentProgress
             location = (float(self.coordN.text()), float(self.coordE.text()))
             addrFormat = ''
             datun = self.refSysCombo.currentText()
